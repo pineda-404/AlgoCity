@@ -32,7 +32,7 @@ Proyecto del curso **CC451-A Interacción Humano-Computador**, Universidad Nacio
 
 1. Clona el repositorio:
    ```bash
-   git clone <URL-del-repositorio> algocity
+   git clone https://github.com/pineda-404/AlgoCity.git algocity
    cd algocity
    ```
 2. Abre `prototipo/index.html` en Chrome o Edge (doble clic), o sírvelo localmente:
