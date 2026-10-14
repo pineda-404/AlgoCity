@@ -1,0 +1,696 @@
+<title>AlgoCity Prototipo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&family=Overpass:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: señalética vial municipal — una barra de mando fija arriba, la ciudad como lienzo y paneles laterales tipo letrero. */
+:root{
+  --asfalto:#1d2430; --papel:#f3f5f1; --tarjeta:#ffffff; --linea:#d5dbd3; --tenue:#5d6b66;
+  --verde:#0b6e4f; --verde-suave:#dcefe6; --ambar:#f2a900; --ambar-suave:#fff3d1;
+  --coral:#c8402f; --coral-suave:#fbe3df; --cielo:#e6eef3; --edif:#8fa3b4; --edif-2:#62788c; --ventana:#ffe08a;
+  --fg:#1d2430; --bg:#f3f5f1; --sobre-verde:#ffffff;
+  --f-señal:'Overpass','Arial Narrow',system-ui,sans-serif;
+  --f-texto:'Atkinson Hyperlegible','Verdana',system-ui,sans-serif;
+  --f-codigo:'JetBrains Mono',ui-monospace,'Courier New',monospace;
+  --escala:1; --r:6px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --papel:#141920; --tarjeta:#1c232d; --linea:#323d4a; --tenue:#a5b1ad;
+  --verde:#3fb98a; --verde-suave:#173a2e; --ambar:#ffc23d; --ambar-suave:#3a3017;
+  --coral:#ff7a66; --coral-suave:#40211d; --cielo:#18212c; --edif:#4c5f72; --edif-2:#6c8399; --ventana:#ffd66b;
+  --fg:#eef2ee; --bg:#141920; --asfalto:#0d1117; --sobre-verde:#0d1117; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --papel:#141920; --tarjeta:#1c232d; --linea:#323d4a; --tenue:#a5b1ad;
+  --verde:#3fb98a; --verde-suave:#173a2e; --ambar:#ffc23d; --ambar-suave:#3a3017;
+  --coral:#ff7a66; --coral-suave:#40211d; --cielo:#18212c; --edif:#4c5f72; --edif-2:#6c8399; --ventana:#ffd66b;
+  --fg:#eef2ee; --bg:#141920; --asfalto:#0d1117; --sobre-verde:#0d1117; color-scheme:dark }
+/* Modo alto contraste (preferencia del perfil, independiente del tema) */
+:root[data-contraste="alto"]{ --papel:#000; --bg:#000; --tarjeta:#000; --fg:#fff; --linea:#fff; --tenue:#fff;
+  --verde:#5cff9d; --verde-suave:#000; --ambar:#ffe600; --ambar-suave:#000; --coral:#ff6b6b; --coral-suave:#000;
+  --cielo:#000; --edif:#fff; --edif-2:#ffe600; --ventana:#000; --asfalto:#000; --sobre-verde:#000; color-scheme:dark }
+
+html{font-size:calc(16px * var(--escala))}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-texto);line-height:1.5;margin:0}
+*{box-sizing:border-box}
+h1,h2,h3{font-family:var(--f-señal);line-height:1.15;text-wrap:balance;margin:0}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--ambar);outline-offset:2px}
+.etiqueta{font-family:var(--f-señal);font-weight:700;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--tenue)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Mapa del prototipo */
+.mapa{background:var(--asfalto);color:#e9eee9;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.mapa-in{display:flex;gap:8px;align-items:center;flex-wrap:wrap;max-width:1280px;margin:0 auto}
+.mapa .etiqueta{color:#aeb8b4;margin-right:6px}
+.mapa button{background:transparent;border:1px solid #445062;color:#e9eee9;border-radius:999px;padding:3px 10px;font-family:var(--f-señal);font-size:.78rem;cursor:pointer}
+.mapa button[aria-current="true"]{background:var(--ambar);border-color:var(--ambar);color:#1d2430;font-weight:700}
+
+/* Marco de la app */
+.app{max-width:1280px;margin:0 auto;padding-block:16px 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.barra{display:flex;align-items:center;gap:16px;flex-wrap:wrap;border-bottom:3px solid var(--fg);padding-bottom:10px;margin-bottom:20px}
+.marca{display:flex;align-items:center;gap:10px}
+.marca-signo{width:34px;height:34px;background:var(--verde);border-radius:6px;display:grid;place-items:center}
+.marca h1{font-size:1.45rem;font-weight:800;letter-spacing:-.01em}
+.barra .ubic{font-family:var(--f-señal);font-weight:600;color:var(--tenue)}
+.barra-der{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ctrl{border:2px solid var(--linea);background:var(--tarjeta);border-radius:var(--r);min-width:44px;min-height:44px;padding:0 10px;cursor:pointer;font-family:var(--f-señal);font-weight:700}
+.ctrl[aria-pressed="true"]{border-color:var(--fg);background:var(--fg);color:var(--bg)}
+.mic-estado{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--tenue)}
+.punto{width:10px;height:10px;border-radius:50%;background:var(--linea)}
+.punto.on{background:var(--coral);box-shadow:0 0 0 4px var(--coral-suave)}
+
+.pantalla{display:none}
+.pantalla.activa{display:block}
+.pid{font-family:var(--f-codigo);font-size:.75rem;color:var(--tenue)}
+
+/* Botones */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:var(--r);border:2px solid var(--fg);background:var(--tarjeta);font-family:var(--f-señal);font-weight:700;font-size:1rem;cursor:pointer;text-decoration:none}
+.btn.prim{background:var(--verde);border-color:var(--verde);color:var(--sobre-verde)}
+.btn.ambar{background:var(--ambar);border-color:var(--ambar);color:#1d2430}
+.btn.peligro{border-color:var(--coral);color:var(--coral)}
+.btn:hover{filter:brightness(1.05)}
+.fila{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* P01 */
+.bienvenida{display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:center;min-height:460px}
+.bienvenida h2{font-size:clamp(2rem,4.5vw,3.4rem);font-weight:800;letter-spacing:-.02em}
+.bienvenida p.lead{font-size:1.15rem;max-width:34em;color:var(--tenue)}
+.letrero{background:var(--verde);color:var(--sobre-verde);border-radius:10px;padding:18px 22px;border:3px solid var(--sobre-verde);outline:3px solid var(--verde);font-family:var(--f-señal)}
+.letrero .l1{font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;opacity:.85}
+.letrero .l2{font-size:1.5rem;font-weight:800}
+.codigo-sala{display:flex;gap:8px;flex-wrap:wrap}
+.codigo-sala input{min-height:48px;border:2px solid var(--linea);border-radius:var(--r);padding:0 12px;background:var(--tarjeta);font-family:var(--f-codigo);letter-spacing:.15em;width:9.5em;text-transform:uppercase}
+
+/* Tarjetas genéricas */
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.caja{background:var(--tarjeta);border:1px solid var(--linea);border-radius:var(--r);padding:18px;min-width:0}
+.caja h3{font-size:1.1rem;margin-bottom:8px}
+.titulo-p{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.titulo-p h2{font-size:1.9rem;font-weight:800}
+
+/* P02 opciones */
+.opcion{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--linea)}
+.opcion:last-child{border-bottom:0}
+.opcion small{display:block;color:var(--tenue)}
+.seg{display:inline-flex;border:2px solid var(--fg);border-radius:var(--r);overflow:hidden}
+.seg button{border:0;background:transparent;min-height:44px;padding:0 12px;cursor:pointer;font-family:var(--f-señal);font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.vista-previa{border:2px dashed var(--linea);border-radius:var(--r);padding:16px}
+
+/* P03 */
+.distrito{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--linea)}
+.distrito:last-child{border-bottom:0}
+.distrito .num{min-width:3em;text-align:right}
+.barra-prog{height:10px;background:var(--cielo);border-radius:99px;overflow:hidden;margin-top:6px}
+.barra-prog i{display:block;height:100%;background:var(--verde)}
+.sugerencia{background:var(--ambar-suave);border:2px solid var(--ambar);border-radius:var(--r);padding:16px}
+.animo{display:flex;gap:8px;flex-wrap:wrap}
+.animo button{min-height:44px;border:2px solid var(--linea);background:var(--tarjeta);border-radius:999px;padding:0 14px;cursor:pointer}
+.animo button[aria-pressed="true"]{border-color:var(--verde);background:var(--verde-suave)}
+.cifra{font-family:var(--f-señal);font-weight:800;font-size:2rem;line-height:1}
+
+/* P04 */
+.alg{display:flex;flex-direction:column;gap:8px;text-align:left;cursor:pointer;border:2px solid var(--linea);background:var(--tarjeta);border-radius:var(--r);padding:16px;min-height:100%}
+.alg:hover{border-color:var(--fg)}
+.alg .sen{display:inline-block;align-self:flex-start;font-family:var(--f-señal);font-weight:800;font-size:.75rem;padding:2px 8px;border-radius:4px;background:var(--verde);color:var(--sobre-verde)}
+.alg .sen.b{background:var(--edif-2)}
+.alg .estado{font-size:.85rem;color:var(--tenue);margin-top:auto}
+.alg[aria-disabled="true"]{opacity:.6;cursor:not-allowed}
+
+/* P05 ejecución */
+.ejec{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px}
+.lienzo{background:var(--cielo);border:1px solid var(--linea);border-radius:var(--r);position:relative;overflow:hidden}
+.lienzo > svg{display:block;width:100%;height:auto}
+[hidden]{display:none!important}
+.aviso svg{flex:none}
+.aviso{margin:12px 12px 0;display:none;gap:10px;align-items:flex-start;background:var(--coral-suave);border:2px solid var(--coral);border-radius:var(--r);padding:10px 14px}
+.aviso.on{display:flex}
+.aviso .ico-bien,.aviso.ok .ico-mal{display:none}.aviso.ok .ico-bien{display:block}
+.aviso.ok{background:var(--verde-suave);border-color:var(--verde)}
+.aviso b{font-family:var(--f-señal)}
+.linea-tiempo{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 12px;border-top:1px solid var(--linea);background:var(--tarjeta)}
+.linea-tiempo .ctrl{font-size:.9rem}
+.pasos{margin-left:auto;font-family:var(--f-codigo);font-size:.85rem;color:var(--tenue)}
+.ejec > div,.vivo > div,.resumen > div{min-width:0}
+.seg{flex-wrap:wrap}
+.lateral{display:flex;flex-direction:column;gap:12px;min-width:0}
+.arquitecto{display:flex;gap:10px;align-items:flex-start}
+.avatar{flex:none;width:44px;height:44px;border-radius:50%;background:var(--asfalto);display:grid;place-items:center;border:3px solid var(--ambar)}
+.dialogo{font-size:1rem}
+.historial{max-height:150px;overflow:auto;font-size:.85rem;color:var(--tenue);border-top:1px solid var(--linea);margin-top:10px;padding-top:8px;display:flex;flex-direction:column;gap:4px}
+pre.pseudo{font-family:var(--f-codigo);font-size:.82rem;margin:0;background:var(--papel);border-radius:4px;padding:8px 0;overflow-x:auto}
+pre.pseudo span{display:block;padding:1px 10px;border-left:4px solid transparent}
+pre.pseudo span.hl{background:var(--ambar-suave);border-left-color:var(--ambar);font-weight:600}
+.voz{display:flex;flex-direction:column;gap:10px;margin-top:16px;background:var(--tarjeta);border:2px solid var(--fg);border-radius:var(--r);padding:12px}
+.voz-fila{display:flex;gap:10px;align-items:center}
+.mic{flex:none;width:56px;height:56px;border-radius:50%;border:0;background:var(--coral);color:#fff;cursor:pointer;display:grid;place-items:center}
+.mic.escuchando{animation:pulso 1.2s infinite}
+@keyframes pulso{0%{box-shadow:0 0 0 0 var(--coral-suave)}100%{box-shadow:0 0 0 14px transparent}}
+.voz input{flex:1;min-width:0;min-height:48px;border:2px solid var(--linea);border-radius:var(--r);padding:0 12px;background:var(--papel)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{min-height:40px;border:1px solid var(--linea);background:var(--papel);border-radius:999px;padding:0 14px;cursor:pointer;font-size:.9rem}
+.chip:hover{border-color:var(--fg)}
+.transcrito{font-size:.85rem;color:var(--tenue)}
+
+/* Ayuda overlay */
+.capa{position:fixed;inset:0;background:rgba(13,17,23,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
+.capa.on{display:flex}
+.capa .caja{max-width:520px;width:100%}
+.tabla-cmd{width:100%;border-collapse:collapse;font-size:.92rem}
+.tabla-cmd td{padding:8px 6px;border-bottom:1px solid var(--linea);vertical-align:top}
+.tabla-cmd td:first-child{font-family:var(--f-codigo);white-space:nowrap}
+
+/* P07 */
+.resumen{display:grid;grid-template-columns:1.2fr 1fr;gap:16px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi{border-top:4px solid var(--verde);padding-top:8px}
+.insignia{display:flex;gap:14px;align-items:center;background:var(--verde-suave);border-radius:var(--r);padding:14px}
+.reflexion textarea{width:100%;min-height:96px;border:2px solid var(--linea);border-radius:var(--r);padding:10px;background:var(--papel);font:inherit}
+
+/* P08 / P09 */
+.sala{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--linea)}
+.sala:last-child{border-bottom:0}
+.modo{font-family:var(--f-señal);font-weight:800;font-size:.75rem;padding:3px 8px;border-radius:4px;border:2px solid var(--fg)}
+.modo.duelo{background:var(--ambar);border-color:var(--ambar);color:#1d2430}
+.personas{display:flex}
+.ini{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-señal);font-weight:800;font-size:.8rem;border:2px solid var(--tarjeta);margin-left:-8px;background:var(--edif-2);color:#fff}
+.ini:first-child{margin-left:0}
+.ini.v{background:var(--verde)} .ini.a{background:var(--ambar);color:#1d2430}
+.vivo{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px}
+.turno{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--r);background:var(--ambar-suave);border:2px solid var(--ambar);margin-bottom:12px}
+.mensajes{display:flex;flex-direction:column;gap:8px;font-size:.9rem}
+.msg b{font-family:var(--f-señal)}
+
+/* P10 */
+.barras{display:flex;flex-direction:column;gap:10px}
+.barras .b{display:grid;grid-template-columns:150px 1fr 2.5em;gap:10px;align-items:center;font-size:.9rem}
+.barras .pista{height:14px;background:var(--cielo);border-radius:3px;overflow:hidden}
+.barras .pista i{display:block;height:100%;background:var(--coral)}
+.emociones{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;text-align:center;font-size:.75rem}
+.emo{height:46px;border-radius:4px;display:grid;place-items:center;font-family:var(--f-señal);font-weight:800;font-size:.8rem}
+.emo.g{background:var(--verde-suave);color:var(--verde)} .emo.n{background:var(--cielo);color:var(--tenue)} .emo.f{background:var(--coral-suave);color:var(--coral)}
+.nota{font-size:.85rem;color:var(--tenue)}
+
+@media (max-width:900px){
+  .bienvenida,.ejec,.resumen,.vivo{grid-template-columns:1fr}
+  .g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  .g2,.g3{grid-template-columns:1fr}
+  .barras .b{grid-template-columns:110px 1fr 2.5em}
+  .titulo-p h2{font-size:1.5rem}
+}
+@media (prefers-reduced-motion:reduce){ *{animation:none!important;transition:none!important} }
+body.captura .mapa{display:none}
+</style>
+
+<nav class="mapa" aria-label="Mapa del prototipo">
+  <div class="mapa-in" id="mapa">
+    <span class="etiqueta">Prototipo · fidelidad media</span>
+  </div>
+</nav>
+
+<div class="app">
+  <header class="barra">
+    <div class="marca">
+      <div class="marca-signo" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="9" width="4" height="11" fill="#fff"/><rect x="8" y="3" width="5" height="17" fill="#fff"/><rect x="15" y="12" width="5" height="8" fill="#f2a900"/></svg>
+      </div>
+      <h1>AlgoCity</h1>
+    </div>
+    <span class="ubic" id="ubic">Bienvenida</span>
+    <div class="barra-der">
+      <button class="ctrl" id="menos" aria-label="Reducir tamaño de texto">A−</button>
+      <button class="ctrl" id="mas" aria-label="Aumentar tamaño de texto">A+</button>
+      <button class="ctrl" id="contraste" aria-pressed="false">Contraste</button>
+      <span class="mic-estado"><span class="punto" id="puntoMic"></span><span id="txtMic">Voz lista</span></span>
+    </div>
+  </header>
+
+  <!-- P01 Bienvenida -->
+  <section class="pantalla" data-p="P01" data-nombre="Bienvenida">
+    <div class="bienvenida">
+      <div class="grid" style="gap:20px">
+        <span class="pid">P01 · Bienvenida</span>
+        <h2>Los algoritmos tienen calles. Recórrelas.</h2>
+        <p class="lead">Ordena rascacielos, viaja en la ruta más corta y construye árboles de avenidas. Hablas, la ciudad responde y el Arquitecto Jefe te explica cada paso.</p>
+        <div class="fila">
+          <button class="btn prim" data-ir="P02">Empezar como invitado</button>
+          <button class="btn" data-ir="P02">Iniciar sesión</button>
+        </div>
+        <div>
+          <label class="etiqueta" for="codigoSala">¿Te invitaron a una sala?</label>
+          <div class="codigo-sala" style="margin-top:6px">
+            <input id="codigoSala" value="URB-4821" aria-label="Código de sala">
+            <button class="btn" data-ir="P09">Unirme</button>
+          </div>
+        </div>
+      </div>
+      <div class="grid" style="gap:16px">
+        <div class="letrero"><div class="l1">Puedes decir</div><div class="l2">“Empezar”</div></div>
+        <div class="caja">
+          <h3>Funciona como tú prefieras</h3>
+          <p style="margin:0">Voz, teclado o pantalla táctil. Texto ampliable, alto contraste, narración en audio y paletas para daltonismo.</p>
+        </div>
+        <p class="nota">Se instala como app (PWA) en laptop o celular y funciona sin conexión en los niveles ya descargados.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- P02 Perfil de accesibilidad -->
+  <section class="pantalla" data-p="P02" data-nombre="Tu forma de aprender">
+    <div class="titulo-p"><h2>¿Cómo quieres usar AlgoCity?</h2><span class="pid">P02 · Configuración inicial</span></div>
+    <div class="grid g2">
+      <div class="caja">
+        <div class="opcion"><div><b>Tamaño del texto</b><small>Se aplica a toda la app</small></div>
+          <div class="seg" role="group" aria-label="Tamaño del texto"><button data-esc="1" aria-pressed="true">Normal</button><button data-esc="1.15" aria-pressed="false">Grande</button><button data-esc="1.3" aria-pressed="false">Muy grande</button></div></div>
+        <div class="opcion"><div><b>Colores</b><small>Patrones y etiquetas además del color</small></div>
+          <div class="seg" role="group" aria-label="Colores"><button aria-pressed="true" data-col="std">Estándar</button><button aria-pressed="false" data-col="alto">Alto contraste</button></div></div>
+        <div class="opcion"><div><b>Narración en voz</b><small>El Arquitecto Jefe lee cada paso</small></div>
+          <div class="seg" role="group" aria-label="Narración"><button aria-pressed="true" data-narr="1">Sí</button><button aria-pressed="false" data-narr="0">No</button></div></div>
+        <div class="opcion"><div><b>Ritmo</b><small>Velocidad de las animaciones y explicaciones</small></div>
+          <div class="seg" role="group" aria-label="Ritmo"><button aria-pressed="false">Pausado</button><button aria-pressed="true">Normal</button><button aria-pressed="false">Rápido</button></div></div>
+        <div class="opcion"><div><b>Modo calma</b><small>Menos efectos, sin sonidos fuertes ni contador de tiempo</small></div>
+          <div class="seg" role="group" aria-label="Modo calma"><button aria-pressed="false">Activado</button><button aria-pressed="true">Desactivado</button></div></div>
+      </div>
+      <div class="grid" style="align-content:start">
+        <div class="caja vista-previa">
+          <span class="etiqueta">Vista previa</span>
+          <p style="font-size:1.1rem;margin:.4rem 0">“Compara el edificio de 8 pisos con el de 3. ¿Cuál es más alto?”</p>
+          <p class="nota" style="margin:0">Así se verá y escuchará el Arquitecto Jefe.</p>
+        </div>
+        <div class="caja">
+          <h3>Tu perfil aprende contigo</h3>
+          <p style="margin:0 0 12px">Guardamos tu ritmo, los pasos donde te equivocas y cómo te sientes al terminar, para sugerirte el siguiente reto. Puedes cambiar esto o borrar tus datos desde tu perfil.</p>
+          <div class="fila"><button class="btn prim" data-ir="P03">Guardar y entrar a mi ciudad</button><button class="btn" data-ir="P03">Ahora no</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- P03 Mi ciudad -->
+  <section class="pantalla" data-p="P03" data-nombre="Mi ciudad">
+    <div class="titulo-p"><h2>Buenas noches, Lucía</h2><span class="pid">P03 · Inicio personalizado</span></div>
+    <div class="grid g3" style="grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)">
+      <div class="grid" style="align-content:start">
+        <div class="sugerencia">
+          <span class="etiqueta" style="color:inherit">Recomendado para ti</span>
+          <h3 style="font-size:1.35rem;margin:.3rem 0">Ordena el centro financiero</h3>
+          <p style="margin:0 0 12px">Ayer te equivocaste dos veces al decidir si intercambiar edificios en Bubble Sort. Hoy lo practicamos con 5 rascacielos y pistas activadas.</p>
+          <button class="btn ambar" data-ir="P05">Continuar Bubble Sort</button>
+        </div>
+        <div class="caja">
+          <h3>Distritos de tu ciudad</h3>
+          <div class="distrito"><span class="modo">ORD</span><div><b>Distrito Ordenamiento</b><div class="barra-prog"><i style="width:45%"></i></div></div><span class="num">45%</span></div>
+          <div class="distrito"><span class="modo">ÁRB</span><div><b>Distrito Árboles</b><div class="barra-prog"><i style="width:20%"></i></div></div><span class="num">20%</span></div>
+          <div class="distrito"><span class="modo">GRA</span><div><b>Distrito Grafos</b><div class="barra-prog"><i style="width:0%"></i></div></div><span class="num">0%</span></div>
+          <div class="fila" style="margin-top:12px"><button class="btn" data-ir="P04">Ver todos los algoritmos</button></div>
+        </div>
+      </div>
+      <div class="grid" style="align-content:start">
+        <div class="caja">
+          <h3>¿Cómo llegas hoy?</h3>
+          <div class="animo" role="group" aria-label="Estado de ánimo">
+            <button aria-pressed="false" data-animo="ganas">Con ganas</button>
+            <button aria-pressed="true" data-animo="normal">Normal</button>
+            <button aria-pressed="false" data-animo="cansada">Cansada</button>
+            <button aria-pressed="false" data-animo="frustrada">Frustrada</button>
+          </div>
+          <p class="nota" id="notaAnimo" style="margin:.6rem 0 0">El Arquitecto usará un tono normal y pistas cuando las pidas.</p>
+        </div>
+        <div class="caja">
+          <div class="grid g2">
+            <div><div class="cifra num">6</div><span class="etiqueta">días seguidos</span></div>
+            <div><div class="cifra num">14</div><span class="etiqueta">edificios construidos</span></div>
+          </div>
+        </div>
+        <div class="caja">
+          <h3>Salas activas</h3>
+          <p style="margin:0 0 10px">Rodrigo te invitó a un duelo de Merge Sort.</p>
+          <button class="btn" data-ir="P08">Ir a salas</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- P04 Algoritmos -->
+  <section class="pantalla" data-p="P04" data-nombre="Elegir algoritmo">
+    <div class="titulo-p"><h2>Elige qué construir</h2><span class="pid">P04 · Catálogo de algoritmos</span></div>
+    <div class="grid g3">
+      <button class="alg" data-ir="P05"><span class="sen">ORDENAMIENTO</span><h3>Bubble Sort</h3><span>Rascacielos que se comparan de dos en dos hasta quedar de menor a mayor.</span><span class="estado">En curso · 45% · Básico</span></button>
+      <button class="alg" data-ir="P05"><span class="sen">ORDENAMIENTO</span><h3>Merge Sort</h3><span>Barrios que se dividen y se vuelven a fusionar ordenados.</span><span class="estado">Disponible · Intermedio</span></button>
+      <button class="alg" data-ir="P05"><span class="sen">ORDENAMIENTO</span><h3>Quick Sort</h3><span>La plaza pivote reparte los edificios a cada lado de la avenida.</span><span class="estado">Disponible · Intermedio</span></button>
+      <button class="alg" data-ir="P05"><span class="sen b">ÁRBOLES</span><h3>Árbol binario de búsqueda</h3><span>Cada nueva casa toma la avenida izquierda o derecha según su número.</span><span class="estado">En curso · 20% · Intermedio</span></button>
+      <button class="alg" aria-disabled="true"><span class="sen b">GRAFOS</span><h3>BFS</h3><span>El metro se expande en ondas, estación por estación.</span><span class="estado">Se desbloquea al terminar Árboles</span></button>
+      <button class="alg" aria-disabled="true"><span class="sen b">GRAFOS</span><h3>Dijkstra</h3><span>El bus encuentra la ruta más corta entre paraderos.</span><span class="estado">Se desbloquea al terminar BFS</span></button>
+    </div>
+  </section>
+
+  <!-- P05 Ejecución -->
+  <section class="pantalla" data-p="P05" data-nombre="Bubble Sort · Centro financiero">
+    <div class="titulo-p"><h2>Ordena el centro financiero</h2><span class="pid" id="pidEjec">P05 · Ejecución guiada por voz</span></div>
+    <div class="ejec">
+      <div>
+        <div class="lienzo">
+          <div class="aviso" id="aviso" role="alert"><svg class="ico-mal" width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 2 21 20H1Z" fill="#c8402f"/><rect x="10" y="8" width="2" height="6" fill="#fff"/><rect x="10" y="15.5" width="2" height="2" fill="#fff"/></svg><svg class="ico-bien" width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="#0b6e4f"/><path d="M6 11.5l3.5 3.5L16 8" stroke="#fff" stroke-width="2.4" fill="none"/></svg><div><b id="avisoT">Embotellamiento algorítmico</b><div id="avisoD">Ese movimiento rompe el orden del algoritmo.</div></div></div>
+          <svg id="ciudad" viewBox="0 0 760 380" role="img" aria-label="Fila de rascacielos que representa el arreglo"></svg>
+          <div class="linea-tiempo">
+            <button class="ctrl" id="btnAtras" aria-label="Retroceder el tiempo un paso">⟲ Retroceder</button>
+            <button class="ctrl" id="btnReiniciar">Reiniciar</button>
+            <button class="ctrl" id="btnAyuda">¿Qué puedo decir?</button>
+            <span class="pasos num" id="pasos">Pasada 1 · Comparación 1</span>
+          </div>
+        </div>
+        <div class="voz">
+          <div class="voz-fila">
+            <button class="mic" id="mic" aria-label="Hablar"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="#fff"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="#fff" stroke-width="2" fill="none"/></svg></button>
+            <input id="cmd" placeholder="Di o escribe: “intercambia”, “avanza”, “dame una pista”…" aria-label="Comando">
+            <button class="btn prim" id="enviar">Enviar</button>
+          </div>
+          <div class="chips" id="chips">
+            <button class="chip" data-c="Intercambia el edificio 8 con el 5">“Intercambia el 8 con el 5”</button>
+            <button class="chip" data-c="intercambia">“Intercambia”</button>
+            <button class="chip" data-c="avanza">“Avanza sin intercambiar”</button>
+            <button class="chip" data-c="retrocede el tiempo">“Retrocede el tiempo”</button>
+            <button class="chip" data-c="dame una pista">“Dame una pista”</button>
+          </div>
+          <div class="transcrito" id="transcrito">Escuché: —</div>
+        </div>
+      </div>
+      <aside class="lateral">
+        <div class="caja">
+          <div class="arquitecto">
+            <div class="avatar" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 11h18l-2-4H5Z" fill="#f2a900"/><circle cx="12" cy="15" r="5" fill="#fff"/></svg></div>
+            <div><span class="etiqueta">Arquitecto Jefe</span><div class="dialogo" id="dialogo" aria-live="polite">Bienvenida al centro financiero, alcaldesa. Compara los dos edificios marcados.</div></div>
+          </div>
+          <div class="historial" id="historial"></div>
+        </div>
+        <div class="caja">
+          <span class="etiqueta">Plano del algoritmo</span>
+          <pre class="pseudo" id="pseudo"><span data-l="1">para i ← 0 hasta n−2</span><span data-l="2">  para j ← 0 hasta n−2−i</span><span data-l="3">    si A[j] &gt; A[j+1]</span><span data-l="4">      intercambiar(A[j], A[j+1])</span><span data-l="5">devolver A</span></pre>
+        </div>
+        <div class="caja">
+          <span class="etiqueta">Estado del arreglo</span>
+          <div id="arreglo" class="num" style="font-family:var(--f-codigo);font-size:1.05rem;margin-top:4px"></div>
+          <div class="nota" id="contadores" style="margin-top:6px">Errores 0 · Pistas 0</div>
+        </div>
+        <button class="btn ambar" id="btnTerminar" hidden data-ir="P07">Ver el resumen de hoy</button>
+      </aside>
+    </div>
+    <div class="capa" id="capaAyuda" role="dialog" aria-modal="true" aria-labelledby="tAyuda">
+      <div class="caja">
+        <h3 id="tAyuda">Comandos que entiendo aquí</h3>
+        <table class="tabla-cmd">
+          <tr><td>“intercambia”</td><td>Intercambia los dos edificios marcados.</td></tr>
+          <tr><td>“intercambia el 8 con el 5”</td><td>Igual, nombrando las alturas.</td></tr>
+          <tr><td>“avanza”</td><td>Pasa a la siguiente pareja sin intercambiar.</td></tr>
+          <tr><td>“retrocede el tiempo”</td><td>Deshace el último paso.</td></tr>
+          <tr><td>“dame una pista”</td><td>El Arquitecto te orienta sin darte la respuesta.</td></tr>
+          <tr><td>“más lento”</td><td>Baja la velocidad de narración.</td></tr>
+        </table>
+        <div class="fila" style="margin-top:14px"><button class="btn prim" id="cerrarAyuda">Entendido</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- P07 Resumen -->
+  <section class="pantalla" data-p="P07" data-nombre="Tu ciudad hoy">
+    <div class="titulo-p"><h2>Tu ciudad hoy</h2><span class="pid">P07 · Cierre reflexivo</span></div>
+    <div class="resumen">
+      <div class="grid" style="align-content:start">
+        <div class="caja">
+          <div class="kpis">
+            <div class="kpi"><div class="cifra num" id="kPasos">10</div><span class="etiqueta">comparaciones</span></div>
+            <div class="kpi"><div class="cifra num" id="kErr">1</div><span class="etiqueta">errores corregidos</span></div>
+            <div class="kpi"><div class="cifra num" id="kPistas">1</div><span class="etiqueta">pistas usadas</span></div>
+            <div class="kpi"><div class="cifra num">4:12</div><span class="etiqueta">minutos</span></div>
+          </div>
+        </div>
+        <div class="caja reflexion">
+          <h3>Antes de irte</h3>
+          <p style="margin:0 0 8px">¿Por qué el edificio más alto siempre llega al final después de la primera pasada?</p>
+          <textarea id="reflexion" aria-label="Tu respuesta">Porque en cada comparación el más alto se va moviendo a la derecha hasta el último lugar.</textarea>
+          <div class="fila" style="margin-top:10px"><button class="btn prim" id="guardarRef">Guardar respuesta</button><span class="nota" id="refOk"></span></div>
+        </div>
+      </div>
+      <div class="grid" style="align-content:start">
+        <div class="insignia">
+          <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true"><path d="M28 4 50 16v24L28 52 6 40V16Z" fill="var(--verde)"/><rect x="18" y="24" width="5" height="16" fill="#fff"/><rect x="26" y="18" width="5" height="22" fill="#fff"/><rect x="34" y="28" width="5" height="12" fill="#f2a900"/></svg>
+          <div><span class="etiqueta">Nueva insignia</span><h3 style="margin:0">Urbanista del orden</h3><span class="nota">Terminaste Bubble Sort corrigiendo tus propios errores.</span></div>
+        </div>
+        <div class="caja">
+          <h3>¿Cómo te sentiste?</h3>
+          <div class="animo" role="group" aria-label="Cómo te sentiste"><button aria-pressed="true">Orgullosa</button><button aria-pressed="false">Normal</button><button aria-pressed="false">Confundida</button></div>
+        </div>
+        <div class="caja">
+          <h3>Siguiente reto sugerido</h3>
+          <p style="margin:0 0 10px">Merge Sort: fusiona dos barrios ya ordenados. Usa la misma idea de comparar de a dos.</p>
+          <div class="fila"><button class="btn prim" data-ir="P04">Elegir reto</button><button class="btn" data-ir="P08">Compartir en una sala</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- P08 Salas -->
+  <section class="pantalla" data-p="P08" data-nombre="Salas">
+    <div class="titulo-p"><h2>Construir con otros</h2><span class="pid">P08 · Salas multiusuario</span></div>
+    <div class="grid" style="grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)">
+      <div class="caja">
+        <h3>Salas abiertas</h3>
+        <div class="sala"><span class="modo duelo">DUELO</span><div><b>Merge Sort contrarreloj</b><div class="nota">Rodrigo te invitó · 1 de 2 lugares</div></div><button class="btn" data-ir="P09">Unirme</button></div>
+        <div class="sala"><span class="modo">COOP</span><div><b>Árbol de avenidas · Sección 2</b><div class="nota">Prof. Ramírez · 5 de 8 lugares</div></div><button class="btn" data-ir="P09">Unirme</button></div>
+        <div class="sala"><span class="modo">COOP</span><div><b>Repaso Bubble Sort</b><div class="nota">Grupo de estudio · 2 de 4 lugares</div></div><button class="btn" data-ir="P09">Unirme</button></div>
+      </div>
+      <div class="caja">
+        <h3>Crear una sala</h3>
+        <div class="opcion"><b>Modo</b><div class="seg" role="group" aria-label="Modo"><button aria-pressed="true">Cooperativo</button><button aria-pressed="false">Duelo</button></div></div>
+        <div class="opcion"><b>Algoritmo</b><select style="min-height:44px;border:2px solid var(--linea);border-radius:6px;background:var(--tarjeta);padding:0 8px" aria-label="Algoritmo"><option>Bubble Sort</option><option>Merge Sort</option><option>BST</option></select></div>
+        <div class="opcion"><b>Turnos por voz</b><span>Activados</span></div>
+        <div class="fila" style="margin-top:12px"><button class="btn prim" data-ir="P09">Crear y compartir código</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- P09 Sala en vivo -->
+  <section class="pantalla" data-p="P09" data-nombre="Sala URB-4821">
+    <div class="titulo-p"><h2>Sala URB-4821 · Repaso Bubble Sort</h2><span class="pid">P09 · Colaboración en vivo</span></div>
+    <div class="vivo">
+      <div>
+        <div class="turno"><div class="personas"><span class="ini v">L</span></div><div><b>Tu turno, Lucía.</b> Rodrigo decidió “avanza” en la pareja anterior. Compara 6 y 2.</div></div>
+        <div class="lienzo"><svg id="ciudadSala" viewBox="0 0 760 380" role="img" aria-label="Ciudad compartida"></svg></div>
+      </div>
+      <aside class="lateral">
+        <div class="caja">
+          <span class="etiqueta">En la sala</span>
+          <div class="fila" style="margin-top:8px"><div class="personas"><span class="ini v">L</span><span class="ini a">D</span><span class="ini">M</span></div><span class="nota">Lucía, Rodrigo, Mateo</span></div>
+        </div>
+        <div class="caja">
+          <span class="etiqueta">Conversación</span>
+          <div class="mensajes" style="margin-top:8px">
+            <div class="msg"><b>Arquitecto:</b> Pasada 2. El 8 ya llegó a su lugar.</div>
+            <div class="msg"><b>Rodrigo (voz):</b> “avanza”, el 3 es menor que el 5.</div>
+            <div class="msg"><b>Mateo:</b> Correcto, lo vi en el plano.</div>
+            <div class="msg"><b>Arquitecto:</b> Bien hecho, equipo. Lucía, te toca.</div>
+          </div>
+        </div>
+        <div class="fila"><button class="btn prim" data-ir="P05">Hablar en mi turno</button><button class="btn peligro" data-ir="P08">Salir</button></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- P10 Perfil -->
+  <section class="pantalla" data-p="P10" data-nombre="Mi perfil">
+    <div class="titulo-p"><h2>Así aprendes</h2><span class="pid">P10 · Perfil adaptativo</span></div>
+    <div class="grid g2">
+      <div class="caja">
+        <h3>Dónde te equivocas más</h3>
+        <div class="barras" id="barrasErr">
+          <div class="b"><span>Decidir intercambio</span><div class="pista"><i style="width:70%"></i></div><span class="num">7</span></div>
+          <div class="b"><span>Elegir pivote</span><div class="pista"><i style="width:40%"></i></div><span class="num">4</span></div>
+          <div class="b"><span>Insertar en BST</span><div class="pista"><i style="width:20%"></i></div><span class="num">2</span></div>
+          <div class="b"><span>Fusionar barrios</span><div class="pista"><i style="width:10%"></i></div><span class="num">1</span></div>
+        </div>
+        <p class="nota" style="margin:.8rem 0 0">Por eso tus próximos retos incluyen más comparaciones con edificios de alturas parecidas.</p>
+      </div>
+      <div class="caja">
+        <h3>Cómo te sentiste esta semana</h3>
+        <div class="emociones">
+          <div><div class="emo g">Bien</div>Lun</div><div><div class="emo n">Normal</div>Mar</div><div><div class="emo f">Difícil</div>Mié</div><div><div class="emo n">Normal</div>Jue</div><div><div class="emo g">Bien</div>Vie</div><div><div class="emo g">Bien</div>Sáb</div><div><div class="emo n">Normal</div>Dom</div>
+        </div>
+        <p class="nota" style="margin:.8rem 0 0">El miércoles el Arquitecto activó el modo calma y te ofreció un ejemplo resuelto.</p>
+      </div>
+      <div class="caja">
+        <h3>Tus preferencias</h3>
+        <div class="opcion"><span>Ritmo</span><b>Normal</b></div>
+        <div class="opcion"><span>Narración en voz</span><b>Activada</b></div>
+        <div class="opcion"><span>Tamaño de texto</span><b id="perfEsc">Normal</b></div>
+        <div class="opcion"><span>Proveedor de IA</span><b>Remoto (con respaldo local)</b></div>
+        <div class="fila" style="margin-top:12px"><button class="btn" data-ir="P02">Cambiar preferencias</button></div>
+      </div>
+      <div class="caja">
+        <h3>Tus datos</h3>
+        <p style="margin:0 0 12px">Guardamos tu progreso, errores y estados de ánimo declarados para adaptar los retos. No guardamos grabaciones de voz.</p>
+        <div class="fila"><button class="btn">Descargar mis datos</button><button class="btn peligro" id="borrar">Borrar mi historial</button></div>
+        <p class="nota" id="confBorrar" hidden style="margin:.6rem 0 0">¿Seguro? Esto reinicia tu ciudad. <button class="btn peligro" style="min-height:36px" id="borrarSi">Sí, borrar</button> <button class="btn" style="min-height:36px" id="borrarNo">Cancelar</button></p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  const pantallas=[...document.querySelectorAll('.pantalla')];
+  const mapa=document.getElementById('mapa');
+  const ubic=document.getElementById('ubic');
+  pantallas.forEach(s=>{const b=document.createElement('button');b.textContent=s.dataset.p+' '+s.dataset.nombre.split('·')[0].trim();b.dataset.ir=s.dataset.p;mapa.appendChild(b)});
+  function ir(id){
+    pantallas.forEach(s=>s.classList.toggle('activa',s.dataset.p===id));
+    const s=pantallas.find(x=>x.dataset.p===id); ubic.textContent=s?s.dataset.nombre:'';
+    mapa.querySelectorAll('button').forEach(b=>b.setAttribute('aria-current',b.dataset.ir===id?'true':'false'));
+    if(id==='P07')llenarResumen();
+    window.scrollTo(0,0);
+  }
+  window.irA=ir;
+  document.addEventListener('click',e=>{const t=e.target.closest('[data-ir]');if(t&&t.getAttribute('aria-disabled')!=='true'){ir(t.dataset.ir)}});
+
+  // Accesibilidad global
+  let escala=1; const root=document.documentElement;
+  function setEsc(v){escala=Math.min(1.4,Math.max(.9,v));root.style.setProperty('--escala',escala);document.getElementById('perfEsc').textContent=escala>1.2?'Muy grande':escala>1.05?'Grande':'Normal'}
+  document.getElementById('mas').onclick=()=>setEsc(escala+.1);
+  document.getElementById('menos').onclick=()=>setEsc(escala-.1);
+  const bc=document.getElementById('contraste');
+  function setCont(on){if(on)root.setAttribute('data-contraste','alto');else root.removeAttribute('data-contraste');bc.setAttribute('aria-pressed',on)}
+  bc.onclick=()=>setCont(bc.getAttribute('aria-pressed')!=='true');
+  document.querySelectorAll('.seg').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    if(b.dataset.esc)setEsc(+b.dataset.esc); if(b.dataset.col)setCont(b.dataset.col==='alto'); if(b.dataset.narr)narrar=b.dataset.narr==='1';}));
+  document.querySelectorAll('.animo').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+    if(b.dataset.animo){animo=b.dataset.animo;const n={ganas:'Subiremos un poco la dificultad y el Arquitecto será más retador.',normal:'El Arquitecto usará un tono normal y pistas cuando las pidas.',cansada:'Retos cortos y pausas sugeridas cada 10 minutos.',frustrada:'Modo calma activado: tono más suave y un ejemplo resuelto al inicio.'};document.getElementById('notaAnimo').textContent=n[b.dataset.animo]}}));
+
+  // ===== Simulación Bubble Sort =====
+  let narrar=true, animo='normal';
+  const INI=[5,8,3,6,2];
+  let A,i,j,hist,err,pistas,comps,choque,terminado,errSeguidos;
+  const svg=document.getElementById('ciudad');
+  const css=v=>getComputedStyle(root).getPropertyValue(v).trim();
+  function reset(){A=INI.slice();i=0;j=0;hist=[];err=0;pistas=0;comps=0;choque=false;terminado=false;errSeguidos=0;
+    document.getElementById('historial').innerHTML='';ocultarAviso();document.getElementById('btnTerminar').hidden=true;
+    decir('Bienvenida al centro financiero, alcaldesa. Compara los dos edificios marcados: '+A[0]+' y '+A[1]+' pisos.',false);dibujar();}
+  function dibujar(destino){
+    destino=destino||svg; const n=A.length, W=760, base=300, bw=96, gap=(W-80-n*bw)/(n-1);
+    let s=`<rect x="0" y="0" width="760" height="380" fill="${css('--cielo')}"/>`;
+    s+=`<rect x="0" y="${base}" width="760" height="80" fill="${css('--asfalto')}"/>`;
+    for(let k=0;k<19;k++)s+=`<rect x="${k*42+8}" y="${base+38}" width="22" height="4" fill="${choque?css('--coral'):'#f2a900'}" opacity=".8"/>`;
+    const ordenadosDesde=n-i;
+    for(let k=0;k<n;k++){
+      const h=A[k]*28+20, x=40+k*(bw+gap), y=base-h;
+      const marcado=!terminado&&(k===j||k===j+1), fijo=k>=ordenadosDesde||terminado;
+      const fill=fijo?css('--verde'):css('--edif-2');
+      let dx=0; if(choque&&marcado)dx=(k===j?14:-14);
+      s+=`<g transform="translate(${dx},0)">`;
+      s+=`<rect x="${x}" y="${y}" width="${bw}" height="${h}" fill="${fill}" stroke="${marcado?css('--ambar'):'none'}" stroke-width="${marcado?6:0}"/>`;
+      for(let r=y+14;r<base-14;r+=22)for(let c=0;c<3;c++)s+=`<rect x="${x+14+c*26}" y="${r}" width="14" height="10" fill="${css('--ventana')}" opacity="${(r+c)%3?0.9:0.35}"/>`;
+      s+=`<rect x="${x+bw/2-24}" y="${y-34}" width="48" height="26" rx="4" fill="${css('--tarjeta')}" stroke="${css('--fg')}" stroke-width="2"/>`;
+      s+=`<text x="${x+bw/2}" y="${y-15}" text-anchor="middle" font-family="Overpass,Arial" font-weight="800" font-size="17" fill="${css('--fg')}">${A[k]}</text>`;
+      s+=`<text x="${x+bw/2}" y="${base+24}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" fill="#cfd8d4">A[${k}]</text>`;
+      if(marcado&&!choque)s+=`<text x="${x+bw/2}" y="${base-6}" text-anchor="middle" font-family="Overpass,Arial" font-weight="800" font-size="12" fill="#1d2430"><tspan>▲</tspan></text>`;
+      s+=`</g>`;
+    }
+    if(choque){ // autos atascados y conos
+      for(let k=0;k<7;k++){const x=250+k*38;s+=`<rect x="${x}" y="${base+50}" width="30" height="16" rx="4" fill="${k%2?css('--edif'):css('--coral')}"/><circle cx="${x+27}" cy="${base+58}" r="3" fill="#ff3b30"/>`}
+      for(let k=0;k<3;k++){const x=170+k*26;s+=`<path d="M${x} ${base+66} l8 -20 l8 20z" fill="#f28c28"/>`}
+    }
+    if(terminado){for(let k=0;k<26;k++){const x=(k*67)%740+10,y=(k*37)%70+12;s+=`<circle cx="${x}" cy="${y}" r="${3+k%4}" fill="${k%3?css('--ambar'):css('--verde')}"/>`}}
+    destino.innerHTML=s;
+    if(destino!==svg)return;
+    document.getElementById('arreglo').textContent='['+A.join(', ')+']';
+    document.getElementById('contadores').textContent='Errores '+err+' · Pistas '+pistas+' · Comparaciones '+comps;
+    document.getElementById('pasos').textContent=terminado?'Ordenado':'Pasada '+(i+1)+' · Comparación '+(j+1);
+    document.querySelectorAll('#pseudo span').forEach(sp=>sp.classList.toggle('hl',terminado?sp.dataset.l==='5':sp.dataset.l===(choque?'4':'3')));
+  }
+  function decir(t,log=true){document.getElementById('dialogo').textContent=t;
+    if(log){const d=document.createElement('div');d.textContent='Arquitecto: '+t;document.getElementById('historial').prepend(d)}
+    if(narrar&&window.speechSynthesis&&log){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='es-PE';u.rate=animo==='frustrada'?0.9:1;speechSynthesis.speak(u)}catch(e){}}}
+  function mostrarAviso(t,d,ok){const a=document.getElementById('aviso');a.classList.add('on');a.classList.toggle('ok',!!ok);document.getElementById('avisoT').textContent=t;document.getElementById('avisoD').textContent=d}
+  function ocultarAviso(){document.getElementById('aviso').classList.remove('on')}
+  function avanzarIndice(){comps++;j++;if(j>A.length-2-i){i++;j=0}
+    if(i>=A.length-1){terminado=true;dibujar();mostrarAviso('¡Ciudad ordenada!','El tráfico fluye. Todos los edificios están de menor a mayor.',true);
+      decir('¡Lo lograste, alcaldesa! El skyline quedó ordenado. Corregiste '+err+(err===1?' error':' errores')+' por tu cuenta.');document.getElementById('btnTerminar').hidden=false;return}
+    dibujar();}
+  function procesar(txt){
+    const t=txt.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+    document.getElementById('transcrito').textContent='Escuché: “'+txt+'”';
+    if(/retroced|deshac|atras/.test(t)){
+      if(choque){choque=false;ocultarAviso();dibujar();decir('El tiempo retrocedió. La avenida está libre otra vez. Mira con calma las alturas '+A[j]+' y '+A[j+1]+'.');return}
+      if(!hist.length){decir('Ya estamos al inicio de la obra.');return}
+      const h=hist.pop();A=h.A;i=h.i;j=h.j;comps=h.comps;terminado=false;ocultarAviso();document.getElementById('btnTerminar').hidden=true;dibujar();decir('Retrocedí un paso. Volvemos a comparar '+A[j]+' y '+A[j+1]+'.');return}
+    if(/pista|ayuda|no entiendo/.test(t)&&!/que puedo/.test(t)){pistas++;dibujar();decir('Pista: en Bubble Sort solo se intercambia si el edificio de la izquierda es más alto que el de la derecha. ¿El de '+A[j]+' pisos es más alto que el de '+A[j+1]+'?');return}
+    if(/que puedo/.test(t)){abrirAyuda();return}
+    if(/lento/.test(t)){decir('Bajé la velocidad de la narración.');return}
+    if(terminado){decir('La ciudad ya está ordenada. Puedes ver tu resumen o reiniciar.');return}
+    if(choque){decir('Primero hay que liberar la avenida. Di “retrocede el tiempo”.');return}
+    let accion=null;
+    if(/intercambi|cambia|swap/.test(t)){accion='swap';const ns=(t.match(/\d+/g)||[]).map(Number);
+      if(ns.length>=2&&!((ns[0]===A[j]&&ns[1]===A[j+1])||(ns[1]===A[j]&&ns[0]===A[j+1]))){accion='fuera'}}
+    else if(/avanza|sigue|siguiente|no intercamb|deja/.test(t))accion='skip';
+    if(!accion){decir('No entendí ese comando. Puedes decir “intercambia”, “avanza” o “dame una pista”.');return}
+    const debe=A[j]>A[j+1];
+    const ok=(accion==='swap'&&debe)||(accion==='skip'&&!debe);
+    if(ok){hist.push({A:A.slice(),i,j,comps});errSeguidos=0;
+      if(accion==='swap'){[A[j],A[j+1]]=[A[j+1],A[j]];decir('Bien. '+A[j+1]+' es más alto que '+A[j]+', así que se intercambian.')}
+      else decir('Correcto. '+A[j]+' ya es menor o igual que '+A[j+1]+'; no se mueven.');
+      avanzarIndice();return}
+    err++;errSeguidos++;choque=true;dibujar();
+    if(accion==='fuera'){mostrarAviso('Embotellamiento algorítmico','Esos edificios no son la pareja que se compara ahora. Bubble Sort solo mira vecinos: '+A[j]+' y '+A[j+1]+'.')}
+    else mostrarAviso('Embotellamiento algorítmico','Ese movimiento rompe el orden del algoritmo. Di “retrocede el tiempo” para liberar la avenida.');
+    let m=accion==='skip'?'¡Cuidado, alcaldesa! Dejaste pasar a '+A[j]+' antes que '+A[j+1]+' y se trabó la avenida. ¿Cuál es más alto?':'¡Cuidado, alcaldesa! Ese movimiento bloqueó la avenida. '+(A[j]<A[j+1]?'El '+A[j]+' ya es más bajo que el '+A[j+1]+', ¿seguro que deben moverse?':'Revisa qué pareja estamos comparando.');
+    if(errSeguidos>=2)m+=' Ya van dos tropiezos seguidos; es normal. ¿Quieres que active el modo calma y te muestre un ejemplo?';
+    decir(m);
+  }
+  window.procesar=procesar;
+  document.getElementById('enviar').onclick=()=>{const v=document.getElementById('cmd').value.trim();if(v){procesar(v);document.getElementById('cmd').value=''}};
+  document.getElementById('cmd').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('enviar').click()});
+  document.getElementById('chips').onclick=e=>{const b=e.target.closest('.chip');if(b)procesar(b.dataset.c)};
+  document.getElementById('btnAtras').onclick=()=>procesar('retrocede el tiempo');
+  document.getElementById('btnReiniciar').onclick=reset;
+  const capa=document.getElementById('capaAyuda');
+  function abrirAyuda(){capa.classList.add('on');document.getElementById('cerrarAyuda').focus()}
+  document.getElementById('btnAyuda').onclick=abrirAyuda;
+  document.getElementById('cerrarAyuda').onclick=()=>capa.classList.remove('on');
+  capa.addEventListener('click',e=>{if(e.target===capa)capa.classList.remove('on')});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')capa.classList.remove('on')});
+
+  // Micrófono: reconocimiento real si el navegador lo permite; si no, se usan los atajos
+  const mic=document.getElementById('mic'),punto=document.getElementById('puntoMic'),txtMic=document.getElementById('txtMic');
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  mic.onclick=()=>{
+    if(!SR){document.getElementById('transcrito').textContent='Este navegador no permite el micrófono aquí. Usa los atajos o escribe el comando.';return}
+    try{const r=new SR();r.lang='es-PE';r.interimResults=false;mic.classList.add('escuchando');punto.classList.add('on');txtMic.textContent='Escuchando…';
+      r.onresult=ev=>procesar(ev.results[0][0].transcript);
+      r.onerror=()=>{document.getElementById('transcrito').textContent='No pude usar el micrófono. Usa los atajos o escribe el comando.'};
+      r.onend=()=>{mic.classList.remove('escuchando');punto.classList.remove('on');txtMic.textContent='Voz lista'};r.start();}
+    catch(e){document.getElementById('transcrito').textContent='No pude usar el micrófono. Usa los atajos o escribe el comando.'}
+  };
+
+  function llenarResumen(){document.getElementById('kPasos').textContent=Math.max(comps,10);document.getElementById('kErr').textContent=err;document.getElementById('kPistas').textContent=pistas}
+  document.getElementById('guardarRef').onclick=()=>{document.getElementById('refOk').textContent='Guardado en tu perfil.'};
+  document.getElementById('borrar').onclick=()=>{document.getElementById('confBorrar').hidden=false};
+  document.getElementById('borrarNo').onclick=()=>{document.getElementById('confBorrar').hidden=true};
+  document.getElementById('borrarSi').onclick=()=>{document.getElementById('confBorrar').textContent='Historial borrado (simulación).'};
+
+  // Ciudad compartida de la sala (estado de ejemplo)
+  window.dibujarSala=function(){const g=A,gi=i,gj=j,gc=choque,gt=terminado;A=[3,5,6,2,8];i=1;j=2;choque=false;terminado=false;dibujar(document.getElementById('ciudadSala'));A=g;i=gi;j=gj;choque=gc;terminado=gt;};
+  // Estados para capturas del informe
+  const correcto=()=>A[j]>A[j+1]?'intercambia':'avanza';
+  window.estado=function(n){const voz=narrar;narrar=false;reset();
+    if(n==='error'||n==='fin'){procesar('Intercambia el edificio 8 con el 5')}
+    if(n==='fin'){procesar('retrocede el tiempo');procesar('dame una pista');let g=0;while(!terminado&&g++<30)procesar(correcto())}
+    if(n==='medio'){for(let k=0;k<3;k++)procesar(correcto())}
+    narrar=voz};
+  reset();dibujarSala();
+  try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{dibujar();dibujarSala()});new MutationObserver(()=>{dibujar();dibujarSala()}).observe(root,{attributes:true,attributeFilter:['data-theme','data-contraste']})}catch(e){}
+  ir('P01');
+})();
+</script>
