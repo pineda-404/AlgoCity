@@ -1,0 +1,77 @@
+[
+  {
+    "id": "x01",
+    "usuario": "u01",
+    "ejercicio": "e01",
+    "inicio": "2026-10-12T21:05:00-05:00",
+    "animoInicio": "normal",
+    "animoFin": "orgullosa",
+    "pasos": [
+      {
+        "comando": "intercambia el edificio 8 con el 5",
+        "correcto": false,
+        "error": "decidir-intercambio"
+      },
+      {
+        "comando": "retrocede el tiempo"
+      },
+      {
+        "comando": "dame una pista",
+        "nivelPista": 1
+      },
+      {
+        "comando": "avanza",
+        "correcto": true
+      },
+      {
+        "comando": "intercambia",
+        "correcto": true
+      }
+    ],
+    "comparaciones": 10,
+    "errores": 1,
+    "pistas": 1,
+    "duracionSeg": 252,
+    "reflexion": "El más alto llega al final en la primera pasada."
+  },
+  {
+    "id": "x02",
+    "usuario": "u05",
+    "ejercicio": "e01",
+    "inicio": "2026-10-11T18:40:00-05:00",
+    "animoInicio": "frustrado",
+    "animoFin": "normal",
+    "pasos": [
+      {
+        "comando": "intercambia el 3 con el 6",
+        "correcto": false,
+        "error": "pareja-equivocada"
+      },
+      {
+        "comando": "avanza",
+        "correcto": false,
+        "error": "decidir-intercambio"
+      },
+      {
+        "evento": "frustracion-inferida",
+        "accion": "ofrecer-modo-calma"
+      }
+    ],
+    "comparaciones": 10,
+    "errores": 3,
+    "pistas": 3,
+    "duracionSeg": 540
+  },
+  {
+    "id": "x03",
+    "usuario": "u02",
+    "ejercicio": "e03",
+    "inicio": "2026-10-10T16:00:00-05:00",
+    "animoInicio": "ganas",
+    "animoFin": "ganas",
+    "comparaciones": 13,
+    "errores": 0,
+    "pistas": 0,
+    "duracionSeg": 131
+  }
+]

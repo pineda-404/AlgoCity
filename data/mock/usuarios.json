@@ -1,0 +1,101 @@
+[
+  {
+    "id": "u01",
+    "nombre": "Lucía Quispe",
+    "rol": "estudiante",
+    "nivel": "intermedio",
+    "preferencias": {
+      "texto": "grande",
+      "contraste": "estandar",
+      "narracion": true,
+      "ritmo": "normal",
+      "modoCalma": false
+    },
+    "erroresFrecuentes": {
+      "decidir-intercambio": 7,
+      "elegir-pivote": 4,
+      "insertar-bst": 2,
+      "fusionar": 1
+    },
+    "racha": 6
+  },
+  {
+    "id": "u02",
+    "nombre": "Rodrigo Huamán",
+    "rol": "estudiante",
+    "nivel": "avanzado",
+    "preferencias": {
+      "texto": "normal",
+      "contraste": "estandar",
+      "narracion": false,
+      "ritmo": "rapido",
+      "modoCalma": false
+    },
+    "erroresFrecuentes": {
+      "elegir-pivote": 1
+    },
+    "racha": 14
+  },
+  {
+    "id": "u03",
+    "nombre": "Mateo Rojas",
+    "rol": "estudiante",
+    "nivel": "intermedio",
+    "preferencias": {
+      "texto": "muy-grande",
+      "contraste": "alto",
+      "narracion": true,
+      "ritmo": "pausado",
+      "modoCalma": false,
+      "lectorPantalla": "TalkBack"
+    },
+    "erroresFrecuentes": {
+      "visitar-nodo": 3
+    },
+    "racha": 2
+  },
+  {
+    "id": "u04",
+    "nombre": "Ana Torres",
+    "rol": "estudiante",
+    "nivel": "basico",
+    "preferencias": {
+      "texto": "normal",
+      "contraste": "estandar",
+      "narracion": true,
+      "ritmo": "normal",
+      "modoCalma": false,
+      "entrada": "teclado-texto"
+    },
+    "nota": "Prefiere no usar el micrófono",
+    "erroresFrecuentes": {
+      "decidir-intercambio": 2
+    },
+    "racha": 1
+  },
+  {
+    "id": "u05",
+    "nombre": "Sebastián Paredes",
+    "rol": "estudiante",
+    "nivel": "basico",
+    "preferencias": {
+      "texto": "normal",
+      "contraste": "estandar",
+      "narracion": true,
+      "ritmo": "pausado",
+      "modoCalma": true
+    },
+    "erroresFrecuentes": {
+      "pareja-equivocada": 3
+    },
+    "racha": 0
+  },
+  {
+    "id": "d01",
+    "nombre": "Carmen Ramírez",
+    "rol": "docente",
+    "salas": [
+      "s02"
+    ]
+  }
+]

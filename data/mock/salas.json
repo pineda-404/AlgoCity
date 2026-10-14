@@ -1,0 +1,41 @@
+[
+  {
+    "id": "s01",
+    "codigo": "URB-4821",
+    "modo": "cooperativo",
+    "ejercicio": "e01",
+    "anfitrion": "u01",
+    "participantes": [
+      "u01",
+      "u02",
+      "u03"
+    ],
+    "capacidad": 4,
+    "turno": "u01"
+  },
+  {
+    "id": "s02",
+    "codigo": "CLS-2026",
+    "modo": "clase",
+    "ejercicio": "e05",
+    "anfitrion": "d01",
+    "participantes": [
+      "u01",
+      "u03",
+      "u04",
+      "u05"
+    ],
+    "capacidad": 8
+  },
+  {
+    "id": "s03",
+    "codigo": "DUE-7730",
+    "modo": "duelo",
+    "ejercicio": "e03",
+    "anfitrion": "u02",
+    "participantes": [
+      "u02"
+    ],
+    "capacidad": 2
+  }
+]

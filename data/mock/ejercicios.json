@@ -1,0 +1,166 @@
+[
+  {
+    "id": "e01",
+    "algoritmo": "bubble",
+    "metafora": "Rascacielos que se comparan de dos en dos",
+    "nivel": "basico",
+    "datos": [
+      5,
+      8,
+      3,
+      6,
+      2
+    ]
+  },
+  {
+    "id": "e02",
+    "algoritmo": "bubble",
+    "metafora": "Rascacielos con alturas parecidas",
+    "nivel": "intermedio",
+    "datos": [
+      6,
+      5,
+      7,
+      4,
+      5,
+      3
+    ]
+  },
+  {
+    "id": "e03",
+    "algoritmo": "merge",
+    "metafora": "Barrios que se dividen y se fusionan ordenados",
+    "nivel": "intermedio",
+    "datos": [
+      38,
+      27,
+      43,
+      3,
+      9,
+      82,
+      10
+    ]
+  },
+  {
+    "id": "e04",
+    "algoritmo": "quick",
+    "metafora": "La plaza pivote reparte los edificios",
+    "nivel": "intermedio",
+    "datos": [
+      10,
+      80,
+      30,
+      90,
+      40,
+      50,
+      70
+    ]
+  },
+  {
+    "id": "e05",
+    "algoritmo": "bst",
+    "metafora": "Árbol de avenidas",
+    "nivel": "intermedio",
+    "inserciones": [
+      50,
+      30,
+      70,
+      20,
+      40,
+      60,
+      80,
+      15
+    ]
+  },
+  {
+    "id": "e06",
+    "algoritmo": "bfs",
+    "metafora": "El metro se expande en ondas",
+    "nivel": "avanzado",
+    "grafo": {
+      "nodos": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "aristas": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "A",
+          "C"
+        ],
+        [
+          "B",
+          "D"
+        ],
+        [
+          "C",
+          "D"
+        ],
+        [
+          "C",
+          "E"
+        ],
+        [
+          "E",
+          "F"
+        ]
+      ]
+    },
+    "inicio": "A"
+  },
+  {
+    "id": "e07",
+    "algoritmo": "dijkstra",
+    "metafora": "Ruta más corta del bus entre paraderos",
+    "nivel": "avanzado",
+    "grafo": {
+      "nodos": [
+        "Plaza",
+        "Mercado",
+        "UNI",
+        "Parque",
+        "Estadio"
+      ],
+      "aristas": [
+        [
+          "Plaza",
+          "Mercado",
+          4
+        ],
+        [
+          "Plaza",
+          "UNI",
+          2
+        ],
+        [
+          "UNI",
+          "Mercado",
+          1
+        ],
+        [
+          "Mercado",
+          "Parque",
+          5
+        ],
+        [
+          "UNI",
+          "Estadio",
+          8
+        ],
+        [
+          "Parque",
+          "Estadio",
+          3
+        ]
+      ]
+    },
+    "inicio": "Plaza"
+  }
+]
