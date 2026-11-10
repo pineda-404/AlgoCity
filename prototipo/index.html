@@ -236,7 +236,7 @@ body.captura .mapa{display:none}
       <div class="grid" style="gap:20px">
         <span class="pid">P01 · Bienvenida</span>
         <h2>Los algoritmos tienen calles. Recórrelas.</h2>
-        <p class="lead">Ordena rascacielos, viaja en la ruta más corta y construye árboles de avenidas. Hablas, la ciudad responde y el Arquitecto Jefe te explica cada paso.</p>
+        <p class="lead">Optimiza el campus de la UNI: organiza bibliotecas, turnos del comedor, laboratorios del CTIC y rutas peatonales entre puertas. Hablas, el campus responde y el Arquitecto Jefe te explica cada paso.</p>
         <div class="fila">
           <button class="btn prim" data-ir="P02">Empezar como invitado</button>
           <button class="btn" data-ir="P02">Iniciar sesión</button>
@@ -279,27 +279,27 @@ body.captura .mapa{display:none}
       <div class="grid" style="align-content:start">
         <div class="caja vista-previa">
           <span class="etiqueta">Vista previa</span>
-          <p style="font-size:1.1rem;margin:.4rem 0">“Compara el edificio de 8 pisos con el de 3. ¿Cuál es más alto?”</p>
+          <p style="font-size:1.1rem;margin:.4rem 0">“Compara el aforo de Bib. FIIS (8) con Bib. FIC (3). ¿Cuál tiene más lugares?”</p>
           <p class="nota" style="margin:0">Así se verá y escuchará el Arquitecto Jefe.</p>
         </div>
         <div class="caja">
           <h3>Tu perfil aprende contigo</h3>
           <p style="margin:0 0 12px">Guardamos tu ritmo, los pasos donde te equivocas y cómo te sientes al terminar, para sugerirte el siguiente reto. Puedes cambiar esto o borrar tus datos desde tu perfil.</p>
-          <div class="fila"><button class="btn prim" data-ir="P03">Guardar y entrar a mi ciudad</button><button class="btn" data-ir="P03">Ahora no</button></div>
+          <div class="fila"><button class="btn prim" data-ir="P03">Guardar y entrar a mi campus UNI</button><button class="btn" data-ir="P03">Ahora no</button></div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- P03 Mi ciudad -->
-  <section class="pantalla" data-p="P03" data-nombre="Mi ciudad">
-    <div class="titulo-p"><h2>Buenas noches, Lucía</h2><span class="pid">P03 · Inicio personalizado</span></div>
+  <section class="pantalla" data-p="P03" data-nombre="Mi campus UNI">
+    <div class="titulo-p"><h2>Buenas noches, Lucía</h2><span class="pid">P03 · Mi campus UNI</span></div>
     <div class="grid g3" style="grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)">
       <div class="grid" style="align-content:start">
         <div class="sugerencia">
           <span class="etiqueta" style="color:inherit">Recomendado para ti</span>
-          <h3 style="font-size:1.35rem;margin:.3rem 0">Ordena el centro financiero</h3>
-          <p style="margin:0 0 12px">Ayer te equivocaste dos veces al decidir si intercambiar edificios en Bubble Sort. Hoy lo practicamos con 5 rascacielos y pistas activadas.</p>
+          <h3 style="font-size:1.35rem;margin:.3rem 0">Optimiza el aforo de Bibliotecas UNI</h3>
+          <p style="margin:0 0 12px">Ayer te equivocaste dos veces al decidir si intercambiar en Bubble Sort. Hoy ordenamos las 5 bibliotecas (Bib. FC, Bib. FIIS, Bib. FIC, Bib. FIEE, Bib. Central) por lugares disponibles en tiempo real con pistas activadas.</p>
           <button class="btn ambar" data-ir="P05">Continuar Bubble Sort</button>
         </div>
         <div class="caja">
@@ -340,18 +340,18 @@ body.captura .mapa{display:none}
   <section class="pantalla" data-p="P04" data-nombre="Elegir algoritmo">
     <div class="titulo-p"><h2>Elige qué construir</h2><span class="pid">P04 · Catálogo de algoritmos</span></div>
     <div class="grid g3">
-      <button class="alg" data-ir="P05"><span class="sen">ORDENAMIENTO</span><h3>Bubble Sort</h3><span>Rascacielos que se comparan de dos en dos hasta quedar de menor a mayor.</span><span class="estado">En curso · 45% · Básico</span></button>
-      <button class="alg" data-ir="P05"><span class="sen">ORDENAMIENTO</span><h3>Merge Sort</h3><span>Barrios que se dividen y se vuelven a fusionar ordenados.</span><span class="estado">Disponible · Intermedio</span></button>
-      <button class="alg" data-ir="P05"><span class="sen">ORDENAMIENTO</span><h3>Quick Sort</h3><span>La plaza pivote reparte los edificios a cada lado de la avenida.</span><span class="estado">Disponible · Intermedio</span></button>
-      <button class="alg" data-ir="P05"><span class="sen b">ÁRBOLES</span><h3>Árbol binario de búsqueda</h3><span>Cada nueva casa toma la avenida izquierda o derecha según su número.</span><span class="estado">En curso · 20% · Intermedio</span></button>
-      <button class="alg" aria-disabled="true"><span class="sen b">GRAFOS</span><h3>BFS</h3><span>El metro se expande en ondas, estación por estación.</span><span class="estado">Se desbloquea al terminar Árboles</span></button>
-      <button class="alg" aria-disabled="true"><span class="sen b">GRAFOS</span><h3>Dijkstra</h3><span>El bus encuentra la ruta más corta entre paraderos.</span><span class="estado">Se desbloquea al terminar BFS</span></button>
+      <button class="alg" data-ir="P05"><span class="sen">ORDENAMIENTO</span><h3>Bubble Sort</h3><span>Ordenar bibliotecas de facultad por lugares libres comparando vecinas.</span><span class="estado">En curso · 45% · Básico</span></button>
+      <button class="alg" data-ir="P05"><span class="sen">ORDENAMIENTO</span><h3>Merge Sort</h3><span>Fusionar colas y turnos ordenados del Comedor Universitario.</span><span class="estado">Disponible · Intermedio</span></button>
+      <button class="alg" data-ir="P05"><span class="sen">ORDENAMIENTO</span><h3>Quick Sort</h3><span>Clasificar pabellones alrededor de un umbral pivote de mantenimiento o tiempo.</span><span class="estado">Disponible · Intermedio</span></button>
+      <button class="alg" data-ir="P05"><span class="sen b">ÁRBOLES</span><h3>Árbol binario de búsqueda</h3><span>Ubicar laboratorios (CTIC y Pabellón R) según su capacidad de alumnos.</span><span class="estado">En curso · 20% · Intermedio</span></button>
+      <button class="alg" aria-disabled="true"><span class="sen b">GRAFOS</span><h3>BFS</h3><span>Explorar por ondas qué tópico o acceso accesible está a menor número de pabellones desde Puerta 3.</span><span class="estado">Se desbloquea al terminar Árboles</span></button>
+      <button class="alg" aria-disabled="true"><span class="sen b">GRAFOS</span><h3>Dijkstra</h3><span>Calcular la ruta peatonal más corta en metros/minutos entre Puerta 3, Biblioteca, Pabellón R y CTIC.</span><span class="estado">Se desbloquea al terminar BFS</span></button>
     </div>
   </section>
 
   <!-- P05 Ejecución -->
-  <section class="pantalla" data-p="P05" data-nombre="Bubble Sort · Centro financiero">
-    <div class="titulo-p"><h2>Ordena el centro financiero</h2><span class="pid" id="pidEjec">P05 · Ejecución guiada por voz</span></div>
+  <section class="pantalla" data-p="P05" data-nombre="Bubble Sort · Bibliotecas UNI">
+    <div class="titulo-p"><h2>Optimiza el aforo de Bibliotecas UNI</h2><span class="pid" id="pidEjec">P05 · Ejecución guiada por voz</span></div>
     <div class="ejec">
       <div>
         <div class="lienzo">
@@ -384,7 +384,7 @@ body.captura .mapa{display:none}
         <div class="caja">
           <div class="arquitecto">
             <div class="avatar" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M3 11h18l-2-4H5Z" fill="#f2a900"/><circle cx="12" cy="15" r="5" fill="#fff"/></svg></div>
-            <div><span class="etiqueta">Arquitecto Jefe</span><div class="dialogo" id="dialogo" aria-live="polite">Bienvenida al centro financiero, alcaldesa. Compara los dos edificios marcados.</div></div>
+            <div><span class="etiqueta">Arquitecto Jefe</span><div class="dialogo" id="dialogo" aria-live="polite">Bienvenida al campus UNI, planificadora. Compara el aforo libre de las dos bibliotecas marcadas.</div></div>
           </div>
           <div class="historial" id="historial"></div>
         </div>
@@ -418,7 +418,7 @@ body.captura .mapa{display:none}
 
   <!-- P07 Resumen -->
   <section class="pantalla" data-p="P07" data-nombre="Tu ciudad hoy">
-    <div class="titulo-p"><h2>Tu ciudad hoy</h2><span class="pid">P07 · Cierre reflexivo</span></div>
+    <div class="titulo-p"><h2>Tu campus hoy</h2><span class="pid">P07 · Cierre reflexivo</span></div>
     <div class="resumen">
       <div class="grid" style="align-content:start">
         <div class="caja">
@@ -431,15 +431,15 @@ body.captura .mapa{display:none}
         </div>
         <div class="caja reflexion">
           <h3>Antes de irte</h3>
-          <p style="margin:0 0 8px">¿Por qué el edificio más alto siempre llega al final después de la primera pasada?</p>
-          <textarea id="reflexion" aria-label="Tu respuesta">Porque en cada comparación el más alto se va moviendo a la derecha hasta el último lugar.</textarea>
+          <p style="margin:0 0 8px">¿Por qué la biblioteca con mayor aforo libre siempre queda al final después de la primera pasada?</p>
+          <textarea id="reflexion" aria-label="Tu respuesta">Porque en cada comparación la biblioteca con mayor aforo se va desplazando hacia la derecha hasta la última posición.</textarea>
           <div class="fila" style="margin-top:10px"><button class="btn prim" id="guardarRef">Guardar respuesta</button><span class="nota" id="refOk"></span></div>
         </div>
       </div>
       <div class="grid" style="align-content:start">
         <div class="insignia">
           <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true"><path d="M28 4 50 16v24L28 52 6 40V16Z" fill="var(--verde)"/><rect x="18" y="24" width="5" height="16" fill="#fff"/><rect x="26" y="18" width="5" height="22" fill="#fff"/><rect x="34" y="28" width="5" height="12" fill="#f2a900"/></svg>
-          <div><span class="etiqueta">Nueva insignia</span><h3 style="margin:0">Urbanista del orden</h3><span class="nota">Terminaste Bubble Sort corrigiendo tus propios errores.</span></div>
+          <div><span class="etiqueta">Nueva insignia</span><h3 style="margin:0">Planificador del campus</h3><span class="nota">Optimizaste el orden de bibliotecas corrigiendo tus propios errores.</span></div>
         </div>
         <div class="caja">
           <h3>¿Cómo te sentiste?</h3>
@@ -447,7 +447,7 @@ body.captura .mapa{display:none}
         </div>
         <div class="caja">
           <h3>Siguiente reto sugerido</h3>
-          <p style="margin:0 0 10px">Merge Sort: fusiona dos barrios ya ordenados. Usa la misma idea de comparar de a dos.</p>
+          <p style="margin:0 0 10px">Merge Sort: fusiona turnos ordenados del Comedor Universitario. Usa la misma idea de comparar de a dos.</p>
           <div class="fila"><button class="btn prim" data-ir="P04">Elegir reto</button><button class="btn" data-ir="P08">Compartir en una sala</button></div>
         </div>
       </div>
