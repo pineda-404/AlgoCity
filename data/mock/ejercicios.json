@@ -2,7 +2,7 @@
   {
     "id": "e01",
     "algoritmo": "bubble",
-    "metafora": "Rascacielos que se comparan de dos en dos",
+    "metafora": "Bibliotecas de facultad (FC, FIIS, FIC, FIEE, Central) que se comparan de dos en dos por lugares libres",
     "nivel": "basico",
     "datos": [
       5,
@@ -10,12 +10,19 @@
       3,
       6,
       2
+    ],
+    "etiquetas": [
+      "Bib. FC",
+      "Bib. FIIS",
+      "Bib. FIC",
+      "Bib. FIEE",
+      "Bib. Central"
     ]
   },
   {
     "id": "e02",
     "algoritmo": "bubble",
-    "metafora": "Rascacielos con alturas parecidas",
+    "metafora": "Salas de estudio de la UNI con aforos disponibles similares",
     "nivel": "intermedio",
     "datos": [
       6,
@@ -29,7 +36,7 @@
   {
     "id": "e03",
     "algoritmo": "merge",
-    "metafora": "Barrios que se dividen y se fusionan ordenados",
+    "metafora": "Colas de turnos del Comedor Universitario que se dividen y fusionan ordenadas por tiempo de atención",
     "nivel": "intermedio",
     "datos": [
       38,
@@ -44,7 +51,7 @@
   {
     "id": "e04",
     "algoritmo": "quick",
-    "metafora": "La plaza pivote reparte los edificios",
+    "metafora": "Pabellones de la UNI clasificados respecto a un presupuesto pivote de mantenimiento",
     "nivel": "intermedio",
     "datos": [
       10,
@@ -59,7 +66,7 @@
   {
     "id": "e05",
     "algoritmo": "bst",
-    "metafora": "Árbol de avenidas",
+    "metafora": "Índice de laboratorios del CTIC y Pabellón R organizados por capacidad de alumnos",
     "nivel": "intermedio",
     "inserciones": [
       50,
@@ -75,92 +82,92 @@
   {
     "id": "e06",
     "algoritmo": "bfs",
-    "metafora": "El metro se expande en ondas",
+    "metafora": "Red peatonal entre pabellones UNI para hallar el tópico o servicio accesible más cercano por saltos",
     "nivel": "avanzado",
     "grafo": {
       "nodos": [
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "F"
+        "Puerta 3",
+        "Pab. Central",
+        "Biblioteca",
+        "Pab. R (FC)",
+        "Comedor",
+        "CTIC"
       ],
       "aristas": [
         [
-          "A",
-          "B"
+          "Puerta 3",
+          "Pab. Central"
         ],
         [
-          "A",
-          "C"
+          "Puerta 3",
+          "Biblioteca"
         ],
         [
-          "B",
-          "D"
+          "Pab. Central",
+          "Pab. R (FC)"
         ],
         [
-          "C",
-          "D"
+          "Biblioteca",
+          "Pab. R (FC)"
         ],
         [
-          "C",
-          "E"
+          "Biblioteca",
+          "Comedor"
         ],
         [
-          "E",
-          "F"
+          "Comedor",
+          "CTIC"
         ]
       ]
     },
-    "inicio": "A"
+    "inicio": "Puerta 3"
   },
   {
     "id": "e07",
     "algoritmo": "dijkstra",
-    "metafora": "Ruta más corta del bus entre paraderos",
+    "metafora": "Ruta peatonal óptima en metros dentro del campus UNI evitando tramos cerrados",
     "nivel": "avanzado",
     "grafo": {
       "nodos": [
-        "Plaza",
-        "Mercado",
-        "UNI",
-        "Parque",
-        "Estadio"
+        "Puerta 3",
+        "Pab. Central",
+        "Biblioteca",
+        "Pab. R (FC)",
+        "CTIC"
       ],
       "aristas": [
         [
-          "Plaza",
-          "Mercado",
-          4
-        ],
-        [
-          "Plaza",
-          "UNI",
+          "Puerta 3",
+          "Pab. Central",
           2
         ],
         [
-          "UNI",
-          "Mercado",
+          "Puerta 3",
+          "Biblioteca",
+          4
+        ],
+        [
+          "Biblioteca",
+          "Pab. Central",
           1
         ],
         [
-          "Mercado",
-          "Parque",
+          "Pab. Central",
+          "Pab. R (FC)",
           5
         ],
         [
-          "UNI",
-          "Estadio",
+          "Biblioteca",
+          "CTIC",
           8
         ],
         [
-          "Parque",
-          "Estadio",
+          "Pab. R (FC)",
+          "CTIC",
           3
         ]
       ]
     },
-    "inicio": "Plaza"
+    "inicio": "Puerta 3"
   }
 ]
