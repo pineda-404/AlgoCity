@@ -569,15 +569,17 @@ body.captura .mapa{display:none}
   document.querySelectorAll('.animo').forEach(g=>g.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));
     if(b.dataset.animo){animo=b.dataset.animo;const n={ganas:'Subiremos un poco la dificultad y el Arquitecto será más retador.',normal:'El Arquitecto usará un tono normal y pistas cuando las pidas.',cansada:'Retos cortos y pausas sugeridas cada 10 minutos.',frustrada:'Modo calma activado: tono más suave y un ejemplo resuelto al inicio.'};document.getElementById('notaAnimo').textContent=n[b.dataset.animo]}}));
 
-  // ===== Simulación Bubble Sort =====
+  // ===== Simulación Bubble Sort (Campus UNI) =====
   let narrar=true, animo='normal';
   const INI=[5,8,3,6,2];
-  let A,i,j,hist,err,pistas,comps,choque,terminado,errSeguidos;
+  const INI_ETIQ=['Bib. FC','Bib. FIIS','Bib. FIC','Bib. FIEE','Bib. Central'];
+  const INI_SIGLAS=['FC','FIIS','FIC','FIEE','BCEN'];
+  let A,ETIQ,SIGLAS,i,j,hist,err,pistas,comps,choque,terminado,errSeguidos;
   const svg=document.getElementById('ciudad');
   const css=v=>getComputedStyle(root).getPropertyValue(v).trim();
-  function reset(){A=INI.slice();i=0;j=0;hist=[];err=0;pistas=0;comps=0;choque=false;terminado=false;errSeguidos=0;
+  function reset(){A=INI.slice();ETIQ=INI_ETIQ.slice();SIGLAS=INI_SIGLAS.slice();i=0;j=0;hist=[];err=0;pistas=0;comps=0;choque=false;terminado=false;errSeguidos=0;
     document.getElementById('historial').innerHTML='';ocultarAviso();document.getElementById('btnTerminar').hidden=true;
-    decir('Bienvenida al centro financiero, alcaldesa. Compara los dos edificios marcados: '+A[0]+' y '+A[1]+' pisos.',false);dibujar();}
+    decir('Bienvenida al campus UNI, planificadora. Compara las dos bibliotecas marcadas: '+SIGLAS[0]+' ('+A[0]+') y '+SIGLAS[1]+' ('+A[1]+' lugares libres).',false);dibujar();}
   function dibujar(destino){
     destino=destino||svg; const n=A.length, W=760, base=300, bw=96, gap=(W-80-n*bw)/(n-1);
     let s=`<rect x="0" y="0" width="760" height="380" fill="${css('--cielo')}"/>`;
@@ -594,11 +596,13 @@ body.captura .mapa{display:none}
       for(let r=y+14;r<base-14;r+=22)for(let c=0;c<3;c++)s+=`<rect x="${x+14+c*26}" y="${r}" width="14" height="10" fill="${css('--ventana')}" opacity="${(r+c)%3?0.9:0.35}"/>`;
       s+=`<rect x="${x+bw/2-24}" y="${y-34}" width="48" height="26" rx="4" fill="${css('--tarjeta')}" stroke="${css('--fg')}" stroke-width="2"/>`;
       s+=`<text x="${x+bw/2}" y="${y-15}" text-anchor="middle" font-family="Overpass,Arial" font-weight="800" font-size="17" fill="${css('--fg')}">${A[k]}</text>`;
-      s+=`<text x="${x+bw/2}" y="${base+24}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="13" fill="#cfd8d4">A[${k}]</text>`;
+      s+=`<rect x="${x+8}" y="${y+8}" width="${bw-16}" height="20" rx="3" fill="rgba(15,23,42,0.75)"/>`;
+      s+=`<text x="${x+bw/2}" y="${y+23}" text-anchor="middle" font-family="Overpass,Arial" font-weight="800" font-size="12" fill="#ffffff">${(SIGLAS&&SIGLAS[k])||('Pab.'+k)}</text>`;
+      s+=`<text x="${x+bw/2}" y="${base+24}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" fill="#cfd8d4">A[${k}] · ${(SIGLAS&&SIGLAS[k])||''}</text>`;
       if(marcado&&!choque)s+=`<text x="${x+bw/2}" y="${base-6}" text-anchor="middle" font-family="Overpass,Arial" font-weight="800" font-size="12" fill="#1d2430"><tspan>▲</tspan></text>`;
       s+=`</g>`;
     }
-    if(choque){ // autos atascados y conos
+    if(choque){ // pasaje bloqueado con conos
       for(let k=0;k<7;k++){const x=250+k*38;s+=`<rect x="${x}" y="${base+50}" width="30" height="16" rx="4" fill="${k%2?css('--edif'):css('--coral')}"/><circle cx="${x+27}" cy="${base+58}" r="3" fill="#ff3b30"/>`}
       for(let k=0;k<3;k++){const x=170+k*26;s+=`<path d="M${x} ${base+66} l8 -20 l8 20z" fill="#f28c28"/>`}
     }
@@ -616,21 +620,21 @@ body.captura .mapa{display:none}
   function mostrarAviso(t,d,ok){const a=document.getElementById('aviso');a.classList.add('on');a.classList.toggle('ok',!!ok);document.getElementById('avisoT').textContent=t;document.getElementById('avisoD').textContent=d}
   function ocultarAviso(){document.getElementById('aviso').classList.remove('on')}
   function avanzarIndice(){comps++;j++;if(j>A.length-2-i){i++;j=0}
-    if(i>=A.length-1){terminado=true;dibujar();mostrarAviso('¡Ciudad ordenada!','El tráfico fluye. Todos los edificios están de menor a mayor.',true);
-      decir('¡Lo lograste, alcaldesa! El skyline quedó ordenado. Corregiste '+err+(err===1?' error':' errores')+' por tu cuenta.');document.getElementById('btnTerminar').hidden=false;return}
+    if(i>=A.length-1){terminado=true;dibujar();mostrarAviso('¡Campus optimizado!','El flujo peatonal está libre. Todas las bibliotecas quedaron ordenadas por aforo.',true);
+      decir('¡Lo lograste! El aforo de bibliotecas quedó ordenado de menor a mayor. Corregiste '+err+(err===1?' error':' errores')+' por tu cuenta.');document.getElementById('btnTerminar').hidden=false;return}
     dibujar();}
   function procesar(txt){
     const t=txt.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
     document.getElementById('transcrito').textContent='Escuché: “'+txt+'”';
     if(/retroced|deshac|atras/.test(t)){
-      if(choque){choque=false;ocultarAviso();dibujar();decir('El tiempo retrocedió. La avenida está libre otra vez. Mira con calma las alturas '+A[j]+' y '+A[j+1]+'.');return}
+      if(choque){choque=false;ocultarAviso();dibujar();decir('El tiempo retrocedió. El pasaje peatonal está libre otra vez. Mira con calma las bibliotecas '+SIGLAS[j]+' ('+A[j]+') y '+SIGLAS[j+1]+' ('+A[j+1]+').');return}
       if(!hist.length){decir('Ya estamos al inicio de la obra.');return}
-      const h=hist.pop();A=h.A;i=h.i;j=h.j;comps=h.comps;terminado=false;ocultarAviso();document.getElementById('btnTerminar').hidden=true;dibujar();decir('Retrocedí un paso. Volvemos a comparar '+A[j]+' y '+A[j+1]+'.');return}
-    if(/pista|ayuda|no entiendo/.test(t)&&!/que puedo/.test(t)){pistas++;dibujar();decir('Pista: en Bubble Sort solo se intercambia si el edificio de la izquierda es más alto que el de la derecha. ¿El de '+A[j]+' pisos es más alto que el de '+A[j+1]+'?');return}
+      const h=hist.pop();A=h.A;SIGLAS=h.SIGLAS||INI_SIGLAS.slice();ETIQ=h.ETIQ||INI_ETIQ.slice();i=h.i;j=h.j;comps=h.comps;terminado=false;ocultarAviso();document.getElementById('btnTerminar').hidden=true;dibujar();decir('Retrocedí un paso. Volvemos a comparar '+SIGLAS[j]+' y '+SIGLAS[j+1]+'.');return}
+    if(/pista|ayuda|no entiendo/.test(t)&&!/que puedo/.test(t)){pistas++;dibujar();decir('Pista: en Bubble Sort solo se intercambia si la biblioteca de la izquierda tiene mayor aforo libre que la de la derecha. ¿'+SIGLAS[j]+' ('+A[j]+') tiene más lugares libres que '+SIGLAS[j+1]+' ('+A[j+1]+')?');return}
     if(/que puedo/.test(t)){abrirAyuda();return}
     if(/lento/.test(t)){decir('Bajé la velocidad de la narración.');return}
-    if(terminado){decir('La ciudad ya está ordenada. Puedes ver tu resumen o reiniciar.');return}
-    if(choque){decir('Primero hay que liberar la avenida. Di “retrocede el tiempo”.');return}
+    if(terminado){decir('El campus ya está ordenado. Puedes ver tu resumen o reiniciar.');return}
+    if(choque){decir('Primero hay que despejar el pasaje peatonal. Di “retrocede el tiempo”.');return}
     let accion=null;
     if(/intercambi|cambia|swap/.test(t)){accion='swap';const ns=(t.match(/\d+/g)||[]).map(Number);
       if(ns.length>=2&&!((ns[0]===A[j]&&ns[1]===A[j+1])||(ns[1]===A[j]&&ns[0]===A[j+1]))){accion='fuera'}}
@@ -638,14 +642,14 @@ body.captura .mapa{display:none}
     if(!accion){decir('No entendí ese comando. Puedes decir “intercambia”, “avanza” o “dame una pista”.');return}
     const debe=A[j]>A[j+1];
     const ok=(accion==='swap'&&debe)||(accion==='skip'&&!debe);
-    if(ok){hist.push({A:A.slice(),i,j,comps});errSeguidos=0;
-      if(accion==='swap'){[A[j],A[j+1]]=[A[j+1],A[j]];decir('Bien. '+A[j+1]+' es más alto que '+A[j]+', así que se intercambian.')}
-      else decir('Correcto. '+A[j]+' ya es menor o igual que '+A[j+1]+'; no se mueven.');
+    if(ok){hist.push({A:A.slice(),SIGLAS:SIGLAS.slice(),ETIQ:ETIQ.slice(),i,j,comps});errSeguidos=0;
+      if(accion==='swap'){[A[j],A[j+1]]=[A[j+1],A[j]];[SIGLAS[j],SIGLAS[j+1]]=[SIGLAS[j+1],SIGLAS[j]];[ETIQ[j],ETIQ[j+1]]=[ETIQ[j+1],ETIQ[j]];decir('Bien. El aforo de '+SIGLAS[j+1]+' ('+A[j+1]+') es mayor que el de '+SIGLAS[j]+' ('+A[j]+'), así que se intercambian.')}
+      else decir('Correcto. '+SIGLAS[j]+' ('+A[j]+') ya tiene menor o igual aforo que '+SIGLAS[j+1]+' ('+A[j+1]+'); no se mueven.');
       avanzarIndice();return}
     err++;errSeguidos++;choque=true;dibujar();
-    if(accion==='fuera'){mostrarAviso('Embotellamiento algorítmico','Esos edificios no son la pareja que se compara ahora. Bubble Sort solo mira vecinos: '+A[j]+' y '+A[j+1]+'.')}
-    else mostrarAviso('Embotellamiento algorítmico','Ese movimiento rompe el orden del algoritmo. Di “retrocede el tiempo” para liberar la avenida.');
-    let m=accion==='skip'?'¡Cuidado, alcaldesa! Dejaste pasar a '+A[j]+' antes que '+A[j+1]+' y se trabó la avenida. ¿Cuál es más alto?':'¡Cuidado, alcaldesa! Ese movimiento bloqueó la avenida. '+(A[j]<A[j+1]?'El '+A[j]+' ya es más bajo que el '+A[j+1]+', ¿seguro que deben moverse?':'Revisa qué pareja estamos comparando.');
+    if(accion==='fuera'){mostrarAviso('Embotellamiento algorítmico','Esas bibliotecas no son la pareja que se compara ahora. Bubble Sort solo mira adyacentes: '+SIGLAS[j]+' ('+A[j]+') y '+SIGLAS[j+1]+' ('+A[j+1]+').')}
+    else mostrarAviso('Embotellamiento algorítmico','Ese movimiento rompe el orden del algoritmo. Di “retrocede el tiempo” para liberar el pasaje peatonal.');
+    let m=accion==='skip'?'¡Cuidado, planificadora! Dejaste pasar a '+SIGLAS[j]+' antes que '+SIGLAS[j+1]+' y se trabó el pasaje peatonal. ¿Cuál tiene más aforo libre?':'¡Cuidado, planificadora! Ese movimiento congestionó el pasaje peatonal. '+(A[j]<A[j+1]?'El aforo de '+SIGLAS[j]+' ('+A[j]+') ya es menor que el de '+SIGLAS[j+1]+' ('+A[j+1]+'), ¿seguro que deben moverse?':'Revisa qué pareja estamos comparando.');
     if(errSeguidos>=2)m+=' Ya van dos tropiezos seguidos; es normal. ¿Quieres que active el modo calma y te muestre un ejemplo?';
     decir(m);
   }
@@ -681,7 +685,13 @@ body.captura .mapa{display:none}
   document.getElementById('borrarSi').onclick=()=>{document.getElementById('confBorrar').textContent='Historial borrado (simulación).'};
 
   // Ciudad compartida de la sala (estado de ejemplo)
-  window.dibujarSala=function(){const g=A,gi=i,gj=j,gc=choque,gt=terminado;A=[3,5,6,2,8];i=1;j=2;choque=false;terminado=false;dibujar(document.getElementById('ciudadSala'));A=g;i=gi;j=gj;choque=gc;terminado=gt;};
+  window.dibujarSala=function(){
+    const g=A,gi=i,gj=j,gc=choque,gt=terminado,gs=SIGLAS,ge=ETIQ;
+    A=[3,5,6,2,8]; SIGLAS=['FIC','FC','FIEE','Central','FIIS']; ETIQ=['Bib. FIC','Bib. FC','Bib. FIEE','Bib. Central','Bib. FIIS'];
+    i=1;j=2;choque=false;terminado=false;
+    dibujar(document.getElementById('ciudadSala'));
+    A=g;i=gi;j=gj;choque=gc;terminado=gt;SIGLAS=gs;ETIQ=ge;
+  };
   // Estados para capturas del informe
   const correcto=()=>A[j]>A[j+1]?'intercambia':'avanza';
   window.estado=function(n){const voz=narrar;narrar=false;reset();
