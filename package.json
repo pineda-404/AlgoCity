@@ -1,0 +1,48 @@
+{
+  "name": "algocity",
+  "version": "0.3.0",
+  "private": true,
+  "description": "AlgoCity: algoritmos como ciudad navegable. PWA con voz, LLM y salas multiusuario (CC451 IHC, UNI 2026-II).",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c blue,green \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:web": "vite",
+    "dev:server": "tsx watch server/index.ts",
+    "build": "tsc --noEmit && vite build",
+    "start": "NODE_ENV=production tsx server/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "capturas": "tsx scripts/capturas.ts"
+  },
+  "dependencies": {
+    "@fontsource/atkinson-hyperlegible": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/overpass": "^5.3.0",
+    "dotenv": "^18.0.10",
+    "express": "^4.22.3",
+    "multer": "^1.4.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "socket.io": "^4.8.4",
+    "socket.io-client": "^4.8.4",
+    "tsx": "^4.23.15"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.25",
+    "@types/multer": "^1.4.13",
+    "@types/node": "^22.20.5",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "concurrently": "^10.0.7",
+    "playwright-core": "^1.65.0",
+    "typescript": "^5.9.3",
+    "vite": "^5.4.21",
+    "vite-plugin-pwa": "^0.20.5",
+    "vitest": "^2.1.9"
+  }
+}
