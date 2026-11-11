@@ -2,7 +2,8 @@
   {
     "id": "e01",
     "algoritmo": "bubble",
-    "metafora": "Bibliotecas de facultad (FC, FIIS, FIC, FIEE, Central) que se comparan de dos en dos por lugares libres",
+    "titulo": "Avenida de rascacielos",
+    "metafora": "Cinco rascacielos en una avenida: compara vecinos y lleva el más alto a la derecha.",
     "nivel": "basico",
     "datos": [
       5,
@@ -10,19 +11,13 @@
       3,
       6,
       2
-    ],
-    "etiquetas": [
-      "Bib. FC",
-      "Bib. FIIS",
-      "Bib. FIC",
-      "Bib. FIEE",
-      "Bib. Central"
     ]
   },
   {
     "id": "e02",
     "algoritmo": "bubble",
-    "metafora": "Salas de estudio de la UNI con aforos disponibles similares",
+    "titulo": "Edificios casi iguales",
+    "metafora": "Alturas muy parecidas y repetidas: entrena la condición A[j] > A[j+1].",
     "nivel": "intermedio",
     "datos": [
       6,
@@ -34,9 +29,40 @@
     ]
   },
   {
+    "id": "e08",
+    "algoritmo": "bubble",
+    "titulo": "Avenida larga",
+    "metafora": "Ocho edificios: observa cómo cada pasada fija el más alto al final.",
+    "nivel": "avanzado",
+    "datos": [
+      9,
+      4,
+      7,
+      1,
+      8,
+      2,
+      6,
+      3
+    ]
+  },
+  {
+    "id": "e09",
+    "algoritmo": "merge",
+    "titulo": "Cuatro casas",
+    "metafora": "Cuatro casas que se agrupan en barrios de 1, luego de 2 y al final de 4.",
+    "nivel": "basico",
+    "datos": [
+      4,
+      1,
+      3,
+      2
+    ]
+  },
+  {
     "id": "e03",
     "algoritmo": "merge",
-    "metafora": "Colas de turnos del Comedor Universitario que se dividen y fusionan ordenadas por tiempo de atención",
+    "titulo": "Barrios por fusionar",
+    "metafora": "Barrios ordenados que se fusionan en una nueva avenida, siempre entrando primero el más bajo.",
     "nivel": "intermedio",
     "datos": [
       38,
@@ -49,9 +75,24 @@
     ]
   },
   {
+    "id": "e10",
+    "algoritmo": "quick",
+    "titulo": "Primer pivote",
+    "metafora": "Un barrio pequeño dividido por una avenida pivote.",
+    "nivel": "basico",
+    "datos": [
+      3,
+      7,
+      1,
+      5,
+      4
+    ]
+  },
+  {
     "id": "e04",
     "algoritmo": "quick",
-    "metafora": "Pabellones de la UNI clasificados respecto a un presupuesto pivote de mantenimiento",
+    "titulo": "Avenida pivote",
+    "metafora": "El último edificio del tramo es el pivote: los menores o iguales cruzan a la izquierda.",
     "nivel": "intermedio",
     "datos": [
       10,
@@ -66,7 +107,8 @@
   {
     "id": "e05",
     "algoritmo": "bst",
-    "metafora": "Índice de laboratorios del CTIC y Pabellón R organizados por capacidad de alumnos",
+    "titulo": "Sistema de avenidas",
+    "metafora": "Cada nuevo edificio baja desde la plaza central girando en cada cruce hasta un lote vacío.",
     "nivel": "intermedio",
     "inserciones": [
       50,
@@ -80,10 +122,100 @@
     ]
   },
   {
+    "id": "e11",
+    "algoritmo": "bst",
+    "titulo": "Avenidas en zigzag",
+    "metafora": "Valores que alternan alrededor de la raíz: un árbol que crece hacia los dos lados.",
+    "nivel": "avanzado",
+    "inserciones": [
+      45,
+      20,
+      70,
+      30,
+      60,
+      25,
+      65,
+      10,
+      90
+    ]
+  },
+  {
+    "id": "e12",
+    "algoritmo": "bfs",
+    "titulo": "Red de metro",
+    "metafora": "Una onda se expande desde la estación A: primero las vecinas, luego las vecinas de las vecinas.",
+    "nivel": "basico",
+    "grafo": {
+      "nodos": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "aristas": [
+        [
+          "A",
+          "B"
+        ],
+        [
+          "A",
+          "C"
+        ],
+        [
+          "B",
+          "D"
+        ],
+        [
+          "C",
+          "D"
+        ],
+        [
+          "D",
+          "E"
+        ],
+        [
+          "C",
+          "F"
+        ]
+      ],
+      "coords": {
+        "A": [
+          12,
+          50
+        ],
+        "B": [
+          35,
+          22
+        ],
+        "C": [
+          35,
+          78
+        ],
+        "D": [
+          60,
+          50
+        ],
+        "E": [
+          88,
+          50
+        ],
+        "F": [
+          62,
+          88
+        ]
+      }
+    },
+    "inicio": "A",
+    "destino": "E"
+  },
+  {
     "id": "e06",
     "algoritmo": "bfs",
-    "metafora": "Red peatonal entre pabellones UNI para hallar el tópico o servicio accesible más cercano por saltos",
-    "nivel": "avanzado",
+    "titulo": "Campus UNI por saltos",
+    "metafora": "Mapa esquemático del campus UNI: ¿a cuántos tramos está cada pabellón desde la Puerta 3?",
+    "nivel": "intermedio",
     "grafo": {
       "nodos": [
         "Puerta 3",
@@ -118,14 +250,129 @@
           "Comedor",
           "CTIC"
         ]
-      ]
+      ],
+      "coords": {
+        "Puerta 3": [
+          10,
+          78
+        ],
+        "Pab. Central": [
+          38,
+          42
+        ],
+        "Biblioteca": [
+          40,
+          82
+        ],
+        "Pab. R (FC)": [
+          70,
+          22
+        ],
+        "Comedor": [
+          68,
+          70
+        ],
+        "CTIC": [
+          90,
+          48
+        ]
+      }
     },
-    "inicio": "Puerta 3"
+    "inicio": "Puerta 3",
+    "destino": "CTIC"
+  },
+  {
+    "id": "e13",
+    "algoritmo": "dijkstra",
+    "titulo": "Metro con tiempos",
+    "metafora": "Tramos de metro con distinta duración: calcula la ruta más rápida de A a F.",
+    "nivel": "intermedio",
+    "grafo": {
+      "nodos": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E",
+        "F"
+      ],
+      "aristas": [
+        [
+          "A",
+          "B",
+          4
+        ],
+        [
+          "A",
+          "C",
+          2
+        ],
+        [
+          "C",
+          "B",
+          1
+        ],
+        [
+          "B",
+          "D",
+          5
+        ],
+        [
+          "C",
+          "E",
+          10
+        ],
+        [
+          "D",
+          "E",
+          2
+        ],
+        [
+          "D",
+          "F",
+          6
+        ],
+        [
+          "E",
+          "F",
+          3
+        ]
+      ],
+      "coords": {
+        "A": [
+          10,
+          50
+        ],
+        "B": [
+          35,
+          20
+        ],
+        "C": [
+          35,
+          80
+        ],
+        "D": [
+          62,
+          22
+        ],
+        "E": [
+          62,
+          78
+        ],
+        "F": [
+          90,
+          50
+        ]
+      }
+    },
+    "inicio": "A",
+    "destino": "F"
   },
   {
     "id": "e07",
     "algoritmo": "dijkstra",
-    "metafora": "Ruta peatonal óptima en metros dentro del campus UNI evitando tramos cerrados",
+    "titulo": "Ruta por el campus UNI",
+    "metafora": "Mapa esquemático del campus UNI con tiempos de caminata en minutos: la ruta más rápida de la Puerta 3 al CTIC.",
     "nivel": "avanzado",
     "grafo": {
       "nodos": [
@@ -133,6 +380,7 @@
         "Pab. Central",
         "Biblioteca",
         "Pab. R (FC)",
+        "Comedor",
         "CTIC"
       ],
       "aristas": [
@@ -158,16 +406,48 @@
         ],
         [
           "Biblioteca",
+          "Comedor",
+          3
+        ],
+        [
+          "Comedor",
           "CTIC",
-          8
+          5
         ],
         [
           "Pab. R (FC)",
           "CTIC",
           3
         ]
-      ]
+      ],
+      "coords": {
+        "Puerta 3": [
+          10,
+          78
+        ],
+        "Pab. Central": [
+          38,
+          42
+        ],
+        "Biblioteca": [
+          40,
+          82
+        ],
+        "Pab. R (FC)": [
+          70,
+          22
+        ],
+        "Comedor": [
+          68,
+          70
+        ],
+        "CTIC": [
+          90,
+          48
+        ]
+      }
     },
-    "inicio": "Puerta 3"
+    "inicio": "Puerta 3",
+    "destino": "CTIC"
   }
 ]
