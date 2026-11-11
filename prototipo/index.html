@@ -324,7 +324,7 @@ body.captura .mapa{display:none}
         <div class="caja">
           <div class="grid g2">
             <div><div class="cifra num">6</div><span class="etiqueta">días seguidos</span></div>
-            <div><div class="cifra num">14</div><span class="etiqueta">edificios construidos</span></div>
+            <div><div class="cifra num">14</div><span class="etiqueta">pabellones optimizados</span></div>
           </div>
         </div>
         <div class="caja">
@@ -356,7 +356,7 @@ body.captura .mapa{display:none}
       <div>
         <div class="lienzo">
           <div class="aviso" id="aviso" role="alert"><svg class="ico-mal" width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M11 2 21 20H1Z" fill="#c8402f"/><rect x="10" y="8" width="2" height="6" fill="#fff"/><rect x="10" y="15.5" width="2" height="2" fill="#fff"/></svg><svg class="ico-bien" width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="10" fill="#0b6e4f"/><path d="M6 11.5l3.5 3.5L16 8" stroke="#fff" stroke-width="2.4" fill="none"/></svg><div><b id="avisoT">Embotellamiento algorítmico</b><div id="avisoD">Ese movimiento rompe el orden del algoritmo.</div></div></div>
-          <svg id="ciudad" viewBox="0 0 760 380" role="img" aria-label="Fila de rascacielos que representa el arreglo"></svg>
+          <svg id="ciudad" viewBox="0 0 760 380" role="img" aria-label="Lienzo interactivo de bibliotecas del campus UNI con sus aforos libres"></svg>
           <div class="linea-tiempo">
             <button class="ctrl" id="btnAtras" aria-label="Retroceder el tiempo un paso">⟲ Retroceder</button>
             <button class="ctrl" id="btnReiniciar">Reiniciar</button>
@@ -404,8 +404,8 @@ body.captura .mapa{display:none}
       <div class="caja">
         <h3 id="tAyuda">Comandos que entiendo aquí</h3>
         <table class="tabla-cmd">
-          <tr><td>“intercambia”</td><td>Intercambia los dos edificios marcados.</td></tr>
-          <tr><td>“intercambia el 8 con el 5”</td><td>Igual, nombrando las alturas.</td></tr>
+          <tr><td>“intercambia”</td><td>Intercambia las dos bibliotecas marcadas.</td></tr>
+          <tr><td>“intercambia el 8 con el 5”</td><td>Igual, nombrando los aforos libres.</td></tr>
           <tr><td>“avanza”</td><td>Pasa a la siguiente pareja sin intercambiar.</td></tr>
           <tr><td>“retrocede el tiempo”</td><td>Deshace el último paso.</td></tr>
           <tr><td>“dame una pista”</td><td>El Arquitecto te orienta sin darte la respuesta.</td></tr>
@@ -480,7 +480,7 @@ body.captura .mapa{display:none}
     <div class="vivo">
       <div>
         <div class="turno"><div class="personas"><span class="ini v">L</span></div><div><b>Tu turno, Lucía.</b> Rodrigo decidió “avanza” en la pareja anterior. Compara 6 y 2.</div></div>
-        <div class="lienzo"><svg id="ciudadSala" viewBox="0 0 760 380" role="img" aria-label="Ciudad compartida"></svg></div>
+        <div class="lienzo"><svg id="ciudadSala" viewBox="0 0 760 380" role="img" aria-label="Campus compartido en tiempo real"></svg></div>
       </div>
       <aside class="lateral">
         <div class="caja">
@@ -511,9 +511,9 @@ body.captura .mapa{display:none}
           <div class="b"><span>Decidir intercambio</span><div class="pista"><i style="width:70%"></i></div><span class="num">7</span></div>
           <div class="b"><span>Elegir pivote</span><div class="pista"><i style="width:40%"></i></div><span class="num">4</span></div>
           <div class="b"><span>Insertar en BST</span><div class="pista"><i style="width:20%"></i></div><span class="num">2</span></div>
-          <div class="b"><span>Fusionar barrios</span><div class="pista"><i style="width:10%"></i></div><span class="num">1</span></div>
+          <div class="b"><span>Fusionar colas (comedor)</span><div class="pista"><i style="width:10%"></i></div><span class="num">1</span></div>
         </div>
-        <p class="nota" style="margin:.8rem 0 0">Por eso tus próximos retos incluyen más comparaciones con edificios de alturas parecidas.</p>
+        <p class="nota" style="margin:.8rem 0 0">Por eso tus próximos retos incluyen más comparaciones con pabellones de aforos parecidos.</p>
       </div>
       <div class="caja">
         <h3>Cómo te sentiste esta semana</h3>
@@ -534,7 +534,7 @@ body.captura .mapa{display:none}
         <h3>Tus datos</h3>
         <p style="margin:0 0 12px">Guardamos tu progreso, errores y estados de ánimo declarados para adaptar los retos. No guardamos grabaciones de voz.</p>
         <div class="fila"><button class="btn">Descargar mis datos</button><button class="btn peligro" id="borrar">Borrar mi historial</button></div>
-        <p class="nota" id="confBorrar" hidden style="margin:.6rem 0 0">¿Seguro? Esto reinicia tu ciudad. <button class="btn peligro" style="min-height:36px" id="borrarSi">Sí, borrar</button> <button class="btn" style="min-height:36px" id="borrarNo">Cancelar</button></p>
+        <p class="nota" id="confBorrar" hidden style="margin:.6rem 0 0">¿Seguro? Esto reinicia tu campus y progreso. <button class="btn peligro" style="min-height:36px" id="borrarSi">Sí, borrar</button> <button class="btn" style="min-height:36px" id="borrarNo">Cancelar</button></p>
       </div>
     </div>
   </section>
@@ -687,7 +687,7 @@ body.captura .mapa{display:none}
   // Ciudad compartida de la sala (estado de ejemplo)
   window.dibujarSala=function(){
     const g=A,gi=i,gj=j,gc=choque,gt=terminado,gs=SIGLAS,ge=ETIQ;
-    A=[3,5,6,2,8]; SIGLAS=['FIC','FC','FIEE','Central','FIIS']; ETIQ=['Bib. FIC','Bib. FC','Bib. FIEE','Bib. Central','Bib. FIIS'];
+    A=[3,5,6,2,8]; SIGLAS=['FIC','FC','FIEE','BCEN','FIIS']; ETIQ=['Bib. FIC','Bib. FC','Bib. FIEE','Bib. Central','Bib. FIIS'];
     i=1;j=2;choque=false;terminado=false;
     dibujar(document.getElementById('ciudadSala'));
     A=g;i=gi;j=gj;choque=gc;terminado=gt;SIGLAS=gs;ETIQ=ge;
